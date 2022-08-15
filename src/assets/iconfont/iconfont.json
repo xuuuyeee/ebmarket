@@ -1,0 +1,37 @@
+{
+  "id": "3577354",
+  "name": "华迪",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1321305",
+      "name": "经典案例_五角星_收藏后",
+      "font_class": "jingdiananli_wujiaoxing_shoucanghou",
+      "unicode": "e64a",
+      "unicode_decimal": 58954
+    },
+    {
+      "icon_id": "1321306",
+      "name": "经典案例_空五角星_收藏",
+      "font_class": "jingdiananli_kongwujiaoxing_shoucang",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "27693568",
+      "name": "小兔子",
+      "font_class": "xiaotuzi",
+      "unicode": "e6ba",
+      "unicode_decimal": 59066
+    },
+    {
+      "icon_id": "6909281",
+      "name": "搜索",
+      "font_class": "sousuo",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    }
+  ]
+}
