@@ -49,7 +49,25 @@ const routes = [
       {
         path: '/user',
         component: () => import('@/views/User/User.vue'),
-        name: 'user'
+        name: 'user',
+        redirect: '/user/userInfo',
+        children:[
+          {
+            path: 'userInfo',
+            component: () => import('@/views/User/Component/UserInfo.vue'),
+            name: 'userInfo'
+          },
+          {
+            path: 'userSafe',
+            component: () => import('@/views/User/Component/UserSafe.vue'),
+            name: 'userSafe'
+          },
+          {
+            path: 'userAdress',
+            component: () => import('@/views/User/Component/UserAdress.vue'),
+            name: 'userAdress'
+          }
+        ]
       },
     ]
   }

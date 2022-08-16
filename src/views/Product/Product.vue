@@ -129,7 +129,6 @@ import service from '@/api';
 import Recommend from "../ShopCraft/Recommend/Recommend.vue";
 import GoodComment from "./GoodComment.vue";
 import GoodDetail from "./GoodDetail.vue";
-import axios from 'axios';
 export default {
   created(){
     // console.log(this.$route.params.sort);
@@ -375,22 +374,6 @@ export default {
       color: #999;
       padding-left: 10px;
     }
-    // .addCart{
-    //     margin-top: 20px;
-    //     margin-left: 10px;
-    //     border-color: #27BA9B;
-    //     background: #27BA9B;
-    //     color: #fff;
-    //     width: 180px;
-    //     height: 50px;
-    //     font-size: 16px;
-    //     text-align: center;
-    //     border: 1px solid transparent;
-    //     border-radius: 4px;
-    //     cursor: pointer;
-    //     outline: none;
-    //     appearance: none;
-    // }
   }
 }
 .good_tabs {
