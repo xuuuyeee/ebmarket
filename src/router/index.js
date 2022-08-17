@@ -37,7 +37,7 @@ const routes = [
         name: 'category',
       },
       {
-        path: '/category/sub/:sort',
+        path: '/category/sub/:way/:sort',
         component: () => import('@/views/Sup/Sup.vue'),
         name: 'sup'
       },

@@ -8,7 +8,9 @@
             class="large_image"
             :style="{
               display: isDisplay ? 'block' : 'none',
-              'background-image': `url(${goodInfo.list[selectedImageNum]})`,
+              'background-image': `url(${
+                BaseUrl + goodInfo.list[selectedImageNum]
+              })`,
               'background-positionX': `${-2 * this.layerX}px`,
               'background-positionY': `${-2 * this.layerY}px`,
             }"
@@ -19,7 +21,7 @@
             @mouseleave="isDisplay = false"
           >
             <el-image
-              :src="goodInfo.list[selectedImageNum]"
+              :src="BaseUrl + goodInfo.list[selectedImageNum]"
               style="max-width: 100%; max_height: 100%; vertical-align: middle"
             ></el-image>
             <div
@@ -40,7 +42,7 @@
               :data-index="index"
             >
               <el-image
-                :src="obj"
+                :src="BaseUrl + obj"
                 style="
                   max-width: 100%;
                   max-height: 100%;
@@ -53,19 +55,17 @@
         <ul class="good_sales"></ul>
       </div>
       <div class="spec">
-        <p class="good_title">{{goodInfo.good_title}}</p>
-        <p class="good_desc">{{goodInfo.good_desc}}</p>
+        <p class="good_title">{{ goodInfo.good_title }}</p>
+        <p class="good_desc">{{ goodInfo.good_desc }}</p>
         <p class="good_price">
-          <span>{{goodInfo.good_price.toFixed(2)}}</span>
+          <span>{{ goodInfo.good_price.toFixed(2) }}</span>
         </p>
         <div class="goods_sku">
-          <dl>
-            <dt>属性</dt>
-            <dd></dd>
-          </dl>
-          <dl>
-            <dt>属性</dt>
-            <dd></dd>
+          <dl v-for="(obj, index) in goodInfo.goodAttribute" :key="index">
+            <dt>{{ index }}</dt>
+            <dd>
+              <span v-for="item in obj" :key="item">{{ item }}</span>
+            </dd>
           </dl>
         </div>
         <div style="display: flex; align-items: center">
@@ -73,7 +73,12 @@
           <el-input-number size="small" v-model="good_num"></el-input-number>
         </div>
 
-        <button class="green_button addCart" @click="addCart(good_id,good_num)">加入购物车</button>
+        <button
+          class="green_button addCart"
+          @click="addCart(good_id, good_num)"
+        >
+          加入购物车
+        </button>
       </div>
     </div>
     <Recommend :recList="recList" style="background-color: #fff"></Recommend>
@@ -125,80 +130,58 @@
   </div>
 </template>
 <script>
-import service from '@/api';
+import { BaseUrl } from "@/api/util";
+import service from "@/api";
 import Recommend from "../ShopCraft/Recommend/Recommend.vue";
 import GoodComment from "./GoodComment.vue";
 import GoodDetail from "./GoodDetail.vue";
 export default {
-  created(){
+  created() {
     // console.log(this.$route.params.sort);
     service({
       url: "/product/getOne",
       method: "GET",
-      params:{
-        id: this.$route.params.sort
-      }
-    }).then((res)=>{
-        console.log(res);
-    })
+      params: {
+        id: 234567,
+      },
+    }).then((res) => {
+      console.log(res.data);
+      let {
+        prodName,
+        description,
+        attributeList,
+        price,
+        id,
+        mainImagePosition,
+      } = res.data;
+      console.log(attributeList);
+      this.goodInfo.good_id = id;
+      this.goodInfo.good_title = prodName;
+      this.goodInfo.good_price = price;
+      this.goodInfo.list = mainImagePosition;
+      this.goodInfo.goodDetailList = attributeList.split(";")[0];
+      this.goodInfo.good_desc = description.split(";")[0];
+      console.log(attributeList.split(";"));
+      Array.from(attributeList.split(";")).forEach((item) => {
+        const attrname = item.split(":")[0];
+        this.goodInfo.goodAttribute[attrname] = Array.from(
+          item.split(":")[1].split(",")
+        );
+      });
+      console.log(this.goodInfo.goodAttribute);
+    });
   },
   data() {
     return {
-      goodInfo:{
-        good_id: 7767890,
-        good_title: '对子哈特',
-        good_desc: '多重呵护二弟',
-        good_price: 69.00,
-        list: [
-        "https://yanxuan-item.nosdn.127.net/b697f27edef08eb9f1b143f76dcd0551.png",
-        "https://yanxuan-item.nosdn.127.net/c3fc9e438924d410eedb336a49b339a2.jpg",
-        "https://yanxuan-item.nosdn.127.net/5ab4ea72dd04a401a743b90119bf3782.jpg",
-        "https://yanxuan-item.nosdn.127.net/39f15462740c80ee7a6edf1b7435c493.png",
-        "https://yanxuan-item.nosdn.127.net/a8669df048c4de899f432c69502121ed.png",
-        ],
-        commentList: {
-        purchasePeopleNum: 1306,
-        zanPerscent: 94.56,
-        userList: [
-          {
-            userName: "小兔用户001",
-            userPicUrl: "",
-            userJudLevel: 3,
-            userJudText:
-              "锅好看，很重，拿锅的时候手最好不要有水，会滑。做菜时锅很烫要小心。锅边有一点瑕疵，锅内底部有一点凸起。锅内水不能超过2/3，否则即使小火也会溢水。总体还可以。",
-            userJueTime: "2021-04-03 13:20:32",
-          },
-        ],
-       },
-        goodDetailList: {
-        attrs: [
-          {
-            title: "功能",
-            content: "其他",
-          },
-          {
-            title: "适用季节",
-            content: "四季",
-          },
-          {
-            title: "温馨提示",
-            content:
-              "1.由于水中含有钙、镁等矿物质，毛巾水洗之后会稍微变硬。定期在含碱/盐/醋的水中蒸煮、浸泡，可使毛巾再次柔软。2.因为毛巾毛圈的丰富性，所以偶尔出现挂线用剪刀剪掉即可，不影响使用，不属于产品质量问题3.为了追求柔软的质感和高吸水性，采用弱捻工艺，可能会有浮毛和少许掉毛，属正常现象。4.该产品为面巾的尺寸，建议面部使用，如需更大尺寸，可选购浴巾。",
-          },
-          {
-            title: "风格",
-            content: "北欧",
-          },
-        ],
-        imgList: [
-          "https://yanxuan-item.nosdn.127.net/04f65e7660f7da1b13b7d03f6c7de54e.jpg",
-          "https://yanxuan-item.nosdn.127.net/1dfaa80155e637dcd40606e66687fc99.jpg",
-          "https://yanxuan-item.nosdn.127.net/2c825bafe1c2ff43efed4a91b1964396.jpg",
-          "https://yanxuan-item.nosdn.127.net/f394e2e85a1cb463ebda080a55ccf9e2.jpg",
-          "https://yanxuan-item.nosdn.127.net/307cceaaee2f842edf1f32fd128dc9be.jpg",
-          "https://yanxuan-item.nosdn.127.net/8590cae12256b1a2f98c3ef45647ab66.jpg",
-        ],
-       }
+      goodInfo: {
+        good_id: -1,
+        good_title: "",
+        good_desc: "",
+        good_price: -1,
+        list: [],
+        commentList: {},
+        goodDetailList: [],
+        goodAttribute: {},
       },
       good_num: 1,
       selectedImageNum: 0,
@@ -220,7 +203,8 @@ export default {
           "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
           "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
         ],
-      ]
+      ],
+      BaseUrl,
     };
   },
   methods: {
@@ -247,11 +231,10 @@ export default {
         this.layerY = my;
       }
     },
-    addCart(id,num){
-      service({
-        
-      })
-    }  
+    addCart(id, num) {
+      service({});
+    },
+    getAttributeName(index) {},
   },
   components: {
     Recommend,
@@ -343,6 +326,7 @@ export default {
         display: flex;
         padding-bottom: 20px;
         align-items: center;
+        justify-content: left;
         dt {
           width: 50px;
           color: #999;

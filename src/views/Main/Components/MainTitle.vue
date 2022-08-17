@@ -6,11 +6,6 @@
         <slot name="span"></slot>
       </span>
     </h2>
-    <span class="list">
-        <a href="javascript:;" v-for="(item, key) in navList" :key="key">
-          <slot name="navSpan" :nav="item"></slot>
-        </a>
-    </span>
     <a href="javascript:;" class="more">查看全部</a>
   </div>
 </template>
