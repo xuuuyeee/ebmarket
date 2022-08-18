@@ -1,18 +1,25 @@
 <template>
   <div class="good_details">
     <ul class="attrs">
-      <li v-for="(obj,index) in goodDetailList.attrs" :key="index">
-        <span class="dt">{{obj.title}}</span>
+      <li v-for="(obj,index) in goodDetailList" :key="index">
+        <span class="dt">{{obj.name}}</span>
         <span class="dd">{{obj.content}}</span>
       </li>
     </ul>
-       <el-image v-for="(item,index) in goodDetailList.imgList" :key="index" :src="item" style="overflow: unset;padding:0px 20% 0px 20%"></el-image>
+       <el-image v-for="(item,index) in goodImageList" :key="index" :src="BaseUrl + item" style="overflow: unset;padding:0px 20% 0px 20%"></el-image>
   </div>
 </template>
 <script>
+import { BaseUrl } from '@/api/util' 
 export default {
     props:{
-        goodDetailList: Object
+        goodDetailList: Array,
+        goodImageList: Array
+    },
+    data(){
+      return{
+        BaseUrl
+      }
     }
 };
 </script>
