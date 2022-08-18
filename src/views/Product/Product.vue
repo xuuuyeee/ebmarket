@@ -151,6 +151,7 @@ export default {
         commentList: [],
         goodDetailList: "",
         goodAttribute: {},
+        good_descList: []
       },
       good_num: 1,
       selectedImageNum: 0,
@@ -220,11 +221,12 @@ export default {
         this.goodInfo.list = mainImagePosition;
         this.goodInfo.goodDetailList = attributeList.split(";")[0];
         this.goodInfo.good_desc = description.split(";")[0];
+        this.goodInfo.good_descList = cutString(description);
+        console.log(this.goodInfo.good_descList);
         Array.from(attributeList.split(";")).forEach((item) => {
           const attrname = item.split(":")[0];
           this.goodInfo.goodAttribute[attrname] = item.split(":")[1]? item.split(":")[1].toString().split(",") : [];
         });
-        console.log("hello");
         service({
           url: "/product/getBySame",
           method: "GET",
@@ -246,7 +248,22 @@ export default {
           }
         });
       });
-    },
+      function cutString(str){
+        let arr = Array.from(str.split(';').slice(1));
+        if(arr[0] == '') return []
+        else{
+          let ans = []
+          arr.forEach( item => {
+            let str = Array.from(item.split(':'))
+            ans.push({
+              name: str[0],
+              content: str[1]
+            })
+          })
+          return ans;
+        }
+      }
+    }
   },
   components: {
     Recommend,
