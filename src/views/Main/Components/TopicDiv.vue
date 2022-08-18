@@ -1,7 +1,7 @@
 <template>
   <div style="background-color: #f5f5f5">
     <div class="wrapper">
-      <main-title>
+      <main-title :href="topic.id">
         <template #h2>{{topic.topicName}}</template>
        <template #span>{{ topic.description }}</template>
       </main-title>

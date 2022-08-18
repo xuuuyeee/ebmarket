@@ -35,7 +35,6 @@
           @mouseover.native="commonHeaderListNum = 5"
           @click.native="fn(5)"
           >洗护</router-link
-          
         >
         <router-link
           to="/category/9"
@@ -100,7 +99,7 @@
 </template>
 
 <script>
-import eventBus from '@/EventBus/index'
+import eventBus from "@/EventBus/index";
 export default {
   name: "CommonHeader",
   data() {
@@ -110,14 +109,70 @@ export default {
       commonHeaderListNum: 0,
       commonHeaderList: [
         [],
-        [{ imgSrc: "", title: "冷冻冷藏", id: 12 }],
-        [{ imgSrc: "", title: "茶咖酒具", id: 2 }],
-        [{ imgSrc: "", title: "家用电器", id: 14 }],
-        [{ imgSrc: "", title: "宠物食品", id: 7 }],
-        [{ imgSrc: "", title: "清洁用品", id: 15 }],
-        [{ imgSrc: "", title: "母婴用品", id: 13 }],
-        [{ imgSrc: "", title: "女士穿搭", id: 3 }],
-        [{ imgSrc: "", title: "古物文玩", id: 16 }],
+        [
+          {
+            imgSrc: "",
+            title: "冷冻冷藏",
+            id: 12,
+            description: "品质优选，值得拥有",
+          },
+        ],
+        [
+          {
+            imgSrc: "",
+            title: "茶咖酒具",
+            id: 2,
+            description: "品质优选，值得拥有",
+          },
+        ],
+        [
+          {
+            imgSrc: "",
+            title: "家用电器",
+            id: 14,
+            description: "品质优选，值得拥有",
+          },
+        ],
+        [
+          {
+            imgSrc: "",
+            title: "宠物食品",
+            id: 7,
+            description: "品质优选，值得拥有",
+          },
+        ],
+        [
+          {
+            imgSrc: "",
+            title: "清洁用品",
+            id: 15,
+            description: "品质优选，值得拥有",
+          },
+        ],
+        [
+          {
+            imgSrc: "",
+            title: "母婴用品",
+            id: 13,
+            description: "品质优选，值得拥有",
+          },
+        ],
+        [
+          {
+            imgSrc: "",
+            title: "女士穿搭",
+            id: 3,
+            description: "品质优选，值得拥有",
+          },
+        ],
+        [
+          {
+            imgSrc: "",
+            title: "古物文玩",
+            id: 16,
+            description: "品质优选，值得拥有",
+          },
+        ],
       ],
     };
   },
@@ -131,11 +186,14 @@ export default {
     },
   },
   methods: {
-    searchGoods() {
-    },
-    fn(num){
+    searchGoods() {},
+    fn(num) {
       eventBus.$emit("send", this.commonHeaderList[num])
-    }
+      // localStorage.setItem(
+      //   "categorylist",
+      //   JSON.stringify(this.commonHeaderList[num])
+      // );   
+    },
   },
 };
 </script>
@@ -153,7 +211,7 @@ export default {
     height: 130px;
     font-size: 30px;
     background-size: contain;
-    color:#27ba9b
+    color: #27ba9b;
   }
   .nav {
     a {

@@ -137,39 +137,8 @@ import GoodComment from "./GoodComment.vue";
 import GoodDetail from "./GoodDetail.vue";
 export default {
   created() {
-    // console.log(this.$route.params.sort);
-    service({
-      url: "/product/getOne",
-      method: "GET",
-      params: {
-        id: 234567,
-      },
-    }).then((res) => {
-      console.log(res.data);
-      let {
-        prodName,
-        description,
-        attributeList,
-        price,
-        id,
-        mainImagePosition,
-      } = res.data;
-      console.log(attributeList);
-      this.goodInfo.good_id = id;
-      this.goodInfo.good_title = prodName;
-      this.goodInfo.good_price = price;
-      this.goodInfo.list = mainImagePosition;
-      this.goodInfo.goodDetailList = attributeList.split(";")[0];
-      this.goodInfo.good_desc = description.split(";")[0];
-      console.log(attributeList.split(";"));
-      Array.from(attributeList.split(";")).forEach((item) => {
-        const attrname = item.split(":")[0];
-        this.goodInfo.goodAttribute[attrname] = Array.from(
-          item.split(":")[1].split(",")
-        );
-      });
-      console.log(this.goodInfo.goodAttribute);
-    });
+    this.sort = this.$route.params["sort"];
+    this.getData(this.sort);
   },
   data() {
     return {
@@ -179,8 +148,8 @@ export default {
         good_desc: "",
         good_price: -1,
         list: [],
-        commentList: {},
-        goodDetailList: [],
+        commentList: [],
+        goodDetailList: "",
         goodAttribute: {},
       },
       good_num: 1,
@@ -191,21 +160,15 @@ export default {
       layerX: 0,
       layerY: 0,
       recList: [
-        [
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
-        ],
-        [
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
-        ],
       ],
       BaseUrl,
     };
+  },
+  watch: {
+    $route(to, from) {
+      this.sort = this.$route.params["sort"];
+      this.getData(this.sort);
+    },
   },
   methods: {
     checkPic(event) {
@@ -232,9 +195,58 @@ export default {
       }
     },
     addCart(id, num) {
-      service({});
+      
     },
-    getAttributeName(index) {},
+    getData(sort) {
+      service({
+        url: "/product/getOne",
+        method: "GET",
+        params: {
+          id: sort,
+        },
+      }).then((res) => {
+        let {
+          prodName,
+          description,
+          attributeList,
+          price,
+          id,
+          mainImagePosition,
+          categoryId,
+        } = res.data;
+        this.goodInfo.good_id = id;
+        this.goodInfo.good_title = prodName;
+        this.goodInfo.good_price = price;
+        this.goodInfo.list = mainImagePosition;
+        this.goodInfo.goodDetailList = attributeList.split(";")[0];
+        this.goodInfo.good_desc = description.split(";")[0];
+        Array.from(attributeList.split(";")).forEach((item) => {
+          const attrname = item.split(":")[0];
+          this.goodInfo.goodAttribute[attrname] = item.split(":")[1]? item.split(":")[1].toString().split(",") : [];
+        });
+        console.log("hello");
+        service({
+          url: "/product/getBySame",
+          method: "GET",
+          params: {
+            id: categoryId,
+          },
+        }).then((res) => {
+          this.recList = [];
+          console.log(res.data);
+          for (let i = 0,j = 0; i < res.data.length; i++) {
+            if((i+1)%4==0 || i == 0){
+              this.recList.push([]);
+              if(i != 0) j++;
+            }
+            this.recList[j].push({
+               id: res.data[i].id,
+               imgSrc: res.data[i].mainImagePosition[0],
+            });
+          }
+        });
+      });
+    },
   },
   components: {
     Recommend,

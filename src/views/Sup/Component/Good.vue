@@ -1,17 +1,23 @@
 <template>
    <li>
-        <router-link :to="`/product/${obj.good_id}`" class="good_router">
-        <el-image :src="obj.imgSrc" style="height:160px; width:160px"></el-image>
-        <p class="good_font good_name">{{obj.good_name}}</p>
-        <p class="good_font good_desc">{{obj.good_desc}}</p>
-        <p class="good_price">￥{{obj.good_price}}</p>
+        <router-link :to="`/product/${obj.id}`" class="good_router">
+        <el-image :src="BaseUrl+obj.imgSrc" style="height:160px; width:160px"></el-image>
+        <p class="good_font good_name">{{obj.prodName}}</p>
+        <p class="good_font good_desc">{{obj.desc}}</p>
+        <p class="good_price">￥{{obj.price}}</p>
         </router-link>
    </li>
 </template>
 <script>
+import { BaseUrl } from '@/api/util'
 export default {
    props: {
       obj : Object
+   },
+   data(){
+      return{
+         BaseUrl
+      }
    }
 }
 </script>

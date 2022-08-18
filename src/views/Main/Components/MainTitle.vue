@@ -6,7 +6,7 @@
         <slot name="span"></slot>
       </span>
     </h2>
-    <a href="javascript:;" class="more">查看全部</a>
+    <router-link class="more" :to="{ name: 'sup', params: { way: 'top', sort: href} }">查看全部</router-link>
   </div>
 </template>
 
@@ -14,7 +14,7 @@
 export default {
   name: 'MainTitle',
   props: {
-    navList: Array
+    href: Number
   }
 }
 </script>
