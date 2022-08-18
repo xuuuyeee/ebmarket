@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%; background: #fff">
     <div class="header-container wrapper">
-      <router-link to="/"><h1></h1></router-link>
+      <router-link to="/"><h1>企业云业务超市</h1></router-link>
       <div class="nav">
         <router-link to="/" @mouseover.native="commonHeaderListNum = 0"
           >首页</router-link
@@ -148,10 +148,12 @@ export default {
   align-items: center;
   height: 130px;
   h1 {
-    width: 200px;
+    width: 220px;
+    line-height: 130px;
     height: 130px;
-    background: url("@/assets/images/logo.png") no-repeat 50%;
+    font-size: 30px;
     background-size: contain;
+    color:#27ba9b
   }
   .nav {
     a {
