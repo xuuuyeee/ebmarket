@@ -6,9 +6,9 @@
         <div class="checkout-address">
           <div class="text">
             <ul v-if="!isNone">
-              <li><span>收货人：</span>{{ addressform.consignee }}</li>
-              <li><span>收货人电话：</span>{{ addressform.telephone }}</li>
-              <li><span>收货人地：</span>{{ addressform.position }}</li>
+              <li><span>收货人：</span>{{ addressForm.consignee }}</li>
+              <li><span>收货人电话：</span>{{ addressForm.telephone }}</li>
+              <li><span>收货人地址：</span>{{ addressForm.position }}</li>
             </ul>
             <a
               href="javascript:;"
@@ -18,7 +18,7 @@
                 dialog = 2;
                 methodWay = 1;
               "
-              >修改地址</a
+            >修改地址</a
             >
             <div class="none" v-else>您需要先添加收货地址才可提交订单。</div>
           </div>
@@ -83,22 +83,22 @@
               <a href="javascript:;"></a>
             </div>
             <div class="body">
-              <el-form ref="form" :model="addressform" label-width="110px">
+              <el-form ref="form" :model="addressForm" label-width="110px">
                 <el-form-item label="收货人姓名">
-                  <el-input v-model="addressform.consignee"></el-input>
+                  <el-input v-model="addressForm.consignee"></el-input>
                 </el-form-item>
                 <el-form-item label="收货人电话号码">
-                  <el-input v-model="addressform.telephone"></el-input>
+                  <el-input v-model="addressForm.telephone"></el-input>
                 </el-form-item>
                 <el-form-item label="收货人名称">
-                  <el-input v-model="addressform.position"></el-input>
+                  <el-input v-model="addressForm.position"></el-input>
                 </el-form-item>
               </el-form>
             </div>
             <div class="footer">
               <div class="action">
                 <button class="cancelBtn" @click="dialog = 0">取消</button>
-                <button class="submitBtn" @click="updataAddress()">确认</button>
+                <button class="submitBtn" @click="updateAddress()">确认</button>
               </div>
             </div>
           </div>
@@ -163,32 +163,34 @@
   </div>
 </template>
 <script>
-import service from "@/api/index";
-import eventBus from "@/EventBus/index";
-import { BaseUrl } from "@/api/util";
+import service from '@/api/index'
+import eventBus from '@/EventBus/index'
+import { BaseUrl } from '@/api/util'
+
 export default {
-  created() {
-    eventBus.$on("checkout", (list) => {
-      this.cartItemFrontVoList = [];
-      this.cartItemFrontVoList = list;
-      console.log(this.cartItemFrontVoList);
-    });
+  created () {
+    eventBus.$on('checkout', (list) => {
+      this.cartItemFrontVoList = []
+      this.cartItemFrontVoList = list
+      console.log(this.cartItemFrontVoList)
+    })
     service({
-      url: "/address/getByUser",
-      method: "GET",
+      url: '/address/getByUser',
+      method: 'GET',
       params: {
-        id: JSON.parse(localStorage.getItem("userInfo")).id,
-      },
+        id: JSON.parse(localStorage.getItem('userInfo')).id
+      }
     }).then((res) => {
-      this.addressTable = Array.from(res.data);
-    });
+      this.addressTable = Array.from(res.data)
+      this.addressForm = this.addressTable[0] // 把第一条地址赋给addressForm
+    })
   },
-  data() {
+  data () {
     return {
-      addressform: {
-        consignee: "",
-        telephone: "",
-        position: "",
+      addressForm: {
+        consignee: '',
+        telephone: '',
+        position: ''
       },
       dialog: 0,
       addressTable: [],
@@ -196,79 +198,81 @@ export default {
       methodWay: 0,
       cartItemFrontVoList: [
         {
-          prodName: "xuye",
+          prodName: 'xuye',
           price: 900,
-          attr: "dddd",
-          count: 40,
-        },
+          attr: 'dddd',
+          count: 40
+        }
       ],
-      BaseUrl,
-    };
+      BaseUrl
+    }
   },
   methods: {
-    changePosition(index) {
-      this.addressform.position = this.addressTable[index].position;
-      this.addressform.consignee = this.addressTable[index].consignee;
-      this.addressform.telephone = this.addressTable[index].telephone;
-      this.addressform.id = this.addressTable[index].id;
-      this.dialog = 0;
+    changePosition (index) {
+      this.addressForm.position = this.addressTable[index].position
+      this.addressForm.consignee = this.addressTable[index].consignee
+      this.addressForm.telephone = this.addressTable[index].telephone
+      this.addressForm.id = this.addressTable[index].id
+      this.dialog = 0
     },
-    updataAddress() {
-      if (this.methodWay == 1) {
+    updateAddress () {
+      if (this.methodWay === 1) {
         service({
-          url: "/address",
-          method: "PUT",
+          url: '/address',
+          method: 'PUT',
           data: {
-            ...this.addressform,
-          },
+            ...this.addressForm
+          }
         }).then((res) => {
-          this.$message("收货人信息修改成功");
-          this.dialog = 0;
-          this.methodWay = 0;
+          this.$message('收货人信息修改成功')
+          this.dialog = 0
+          this.methodWay = 0
           let index = this.addressTable.findIndex(
-            (item) => item.id == res.data.id
-          );
-          this.$set(this.addressTable, index, { ...this.addressform });
-        });
-      } else if (this.methodWay == 2) {
-        this.addressform.consignee = "";
-        this.addressform.position = "";
-        this.addressform.telephone = "";
+            (item) => item.id === res.data.id
+          )
+          this.$set(this.addressTable, index, { ...this.addressForm })
+        })
+      } else if (this.methodWay === 2) {
+        this.addressForm.consignee = ''
+        this.addressForm.position = ''
+        this.addressForm.telephone = ''
         service({
-          url: "/address",
-          method: "POST",
+          url: '/address',
+          method: 'POST',
           data: {
-            ...this.addressform,
-            userId: JSON.parse(localStorage.getItem("userInfo")).id,
-          },
+            ...this.addressForm,
+            userId: JSON.parse(localStorage.getItem('userInfo')).id
+          }
         }).then((res) => {
-          this.$message("收货人信息添加成功");
-          this.addressTable.push({ ...this.addressform });
-          this.dialog = 0;
-          this.methodWay = 0;
-        });
+          console.log(res)
+          this.$message('收货人信息添加成功')
+          this.addressTable.push({ ...this.addressForm })
+          this.dialog = 0
+          this.methodWay = 0
+        })
       }
     },
-    subTotal(count, price) {
-      return count * price;
-    },
+    subTotal (count, price) {
+      return count * price
+    }
   },
   computed: {
-    isNone() {
-      let i = Object.values(this.addressform).filter(
-        (item) => item == ""
-      ).length;
-      if (i == 0) {
-        return false;
+    isNone () {
+      let i = Object.values(this.addressForm).filter(
+        (item) => item === ''
+      ).length
+      if (i === 0) {
+        return false
       }
-      return true;
-    },
-  },
-};
+      return true
+    }
+  }
+}
 </script>
 <style lang="less" scoped>
 .checkout {
   padding: 0 20px;
+
   .box-title {
     font-size: 16px;
     font-weight: normal;
@@ -276,22 +280,28 @@ export default {
     line-height: 70px;
     border-bottom: 1px solid #f5f5f5;
   }
+
   .box-body {
     padding: 20px 0;
+
     .checkout-address {
       border: 1px solid #f5f5f5;
       display: flex;
       align-items: center;
+
       .text {
         flex: 1;
         min-height: 90px;
         display: flex;
         align-items: center;
+
         > ul {
           flex: 1;
           padding: 20px;
+
           li {
             line-height: 30px;
+
             span {
               color: #999;
               margin-right: 5px;
@@ -305,6 +315,7 @@ export default {
           text-align: center;
           width: 100%;
         }
+
         .changePosition {
           color: #27ba9b;
           width: 160px;
@@ -314,9 +325,11 @@ export default {
           border-right: 1px solid #f5f5f5;
         }
       }
+
       .action {
         width: 420px;
         text-align: center;
+
         .addressbtn {
           width: 140px;
           height: 46px;
@@ -330,12 +343,14 @@ export default {
           white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden;
+
           &:first-child {
             margin-right: 10px;
           }
         }
       }
     }
+
     .dialog {
       position: fixed;
       left: 0;
@@ -344,6 +359,7 @@ export default {
       height: 100%;
       z-index: 8887;
       background: rgba(0, 0, 0, 0);
+
       .dia-wrapper {
         width: 600px;
         background: #fff;
@@ -354,27 +370,32 @@ export default {
         transform: translate(-50%, -60%);
         opacity: 0;
       }
+
       .dia1-fade {
         transition: all 0.4s;
         transform: translate(-50%, -50%);
         opacity: 1;
       }
+
       .dia2-fade {
         transition: all 0.4s;
         transform: translate(-50%, -50%);
         opacity: 1;
         width: 780px;
       }
+
       .header {
         position: relative;
         height: 70px;
         line-height: 70px;
         padding: 0 20px;
         border-bottom: 1px solid #f5f5f5;
+
         h3 {
           font-weight: normal;
           font-size: 18px;
         }
+
         // .closeBtn {
         //   position: absolute;
         //   right: 25px;
@@ -387,9 +408,11 @@ export default {
         //   color: #999;
         // }
       }
+
       .body {
         padding: 20px 40px;
         font-size: 16px;
+
         .item {
           border: 1px solid #f5f5f5;
           margin-bottom: 10px;
@@ -398,20 +421,24 @@ export default {
           min-height: 90px;
           display: flex;
           align-items: center;
+
           > ul {
             padding: 10px;
             font-size: 14px;
             line-height: 30px;
           }
+
           &:hover {
             border-color: #27ba9b;
             background: #e6faf6;
           }
         }
       }
+
       .footer {
         text-align: center;
         padding: 10px 0 30px 0;
+
         .cancelBtn {
           margin-right: 20px;
           background: #ccc;
@@ -424,6 +451,7 @@ export default {
           text-align: center;
           border: 1px solid #ccc;
         }
+
         .submitBtn {
           margin-right: 20px;
           background: #27ba9b;
@@ -438,10 +466,12 @@ export default {
         }
       }
     }
+
     .body-fade {
       transition: all 0.4s;
       background: rgba(0, 0, 0, 0.5);
     }
+
     .payment {
       width: 228px;
       height: 50px;
@@ -452,14 +482,17 @@ export default {
       color: #666666;
       display: inline-block;
     }
+
     .total {
       dl {
         display: flex;
         justify-content: flex-end;
         line-height: 50px;
+
         dt {
           display: block;
         }
+
         dd {
           width: 240px;
           text-align: right;
@@ -468,10 +501,12 @@ export default {
       }
     }
   }
+
   .submit {
     text-align: right;
     padding: 60px;
     border-top: 1px solid #f5f5f5;
+
     .submitBtn {
       background: #27ba9b;
       color: #fff;
