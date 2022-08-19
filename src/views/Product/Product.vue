@@ -298,7 +298,6 @@ export default {
           id: sort,
         },
       }).then((res) => {
-        // console.log(res.data);
         let {
           prodName,
           description,
