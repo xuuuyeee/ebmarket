@@ -23,9 +23,9 @@
             <div class="none" v-else>您需要先添加收货地址才可提交订单。</div>
           </div>
           <div class="action">
-            <button class="addressbtn" @click="dialog = 1">切换地址</button>
+            <button class="addressBtn" @click="dialog = 1">切换地址</button>
             <button
-              class="addressbtn"
+              class="addressBtn"
               @click="
                 dialog = 2;
                 methodWay = 2;
@@ -35,13 +35,13 @@
             </button>
           </div>
         </div>
-        <!-- 切换收获地址 -->
+        <!-- 获取收货地址 -->
         <div
           class="dialog"
-          :style="{ display: dialog == 1 ? 'block' : 'none' }"
-          :class="{ 'body-fade': dialog == 1 }"
+          :style="{ display: dialog === 1 ? 'block' : 'none' }"
+          :class="{ 'body-fade': dialog === 1 }"
         >
-          <div class="dia-wrapper" :class="{ 'dia1-fade': dialog == 1 }">
+          <div class="dia-wrapper" :class="{ 'dia1-fade': dialog === 1 }">
             <div class="header">
               <h3>切换收货地址</h3>
             </div>
@@ -51,8 +51,8 @@
                 v-for="(obj, index) in addressTable"
                 :key="index"
                 :style="{
-                  'border-color': dialogClick == index ? '#27ba9b' : 'f5f5f5',
-                  'background-color': dialogClick == index ? '#e6faf6' : '#fff',
+                  'border-color': dialogClick === index ? '#27ba9b' : 'f5f5f5',
+                  'background-color': dialogClick === index ? '#e6faf6' : '#fff',
                 }"
                 @click="dialogClick = index"
               >
@@ -74,10 +74,10 @@
         <!-- 添加 -->
         <div
           class="dialog"
-          :style="{ display: dialog == 2 ? 'block' : 'none' }"
-          :class="{ 'body-fade': dialog == 2 }"
+          :style="{ display: dialog === 2 ? 'block' : 'none' }"
+          :class="{ 'body-fade': dialog === 2 }"
         >
-          <div class="dia-wrapper" :class="{ 'dia2-fade': dialog == 2 }">
+          <div class="dia-wrapper" :class="{ 'dia2-fade': dialog === 2 }">
             <div class="header">
               <h3>切换收货地址</h3>
               <a href="javascript:;"></a>
@@ -107,37 +107,47 @@
       <h3 class="box-title">商品信息</h3>
       <div class="box-body">
         <el-table :data="cartItemFrontVoList">
-          <el-table-column label="商品信息" width="400">
+          <el-table-column label="选择" width="100" align="center">
             <template slot-scope="scope">
-              <div style="display: flex; justify-content: center">
+              <input type="checkbox" v-model="!scope.row.isDeleted"/>
+            </template>
+          </el-table-column>
+          <el-table-column label="商品信息" width="400" align="center">
+            <template slot-scope="scope">
+              <div style="display: flex; justify-content:center">
                 <el-image
-                  :src="BaseUrl + scope.row.imagePosition"
+                  :src="BaseUrl+scope.row.imagePosition"
                   style="width: 100px; height: 100px; display: inline-block"
                 ></el-image>
                 <div class="goods_name">
-                  <span>{{ scope.row.prodName }}</span>
-                  <span>{{ scope.row.attr }}</span>
+                  <span>{{ scope.row.productName }}</span>
+                  <br>
+                  <span>{{ scope.row.attributeValue }}</span>
                 </div>
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="price" label="单价"></el-table-column>
-          <el-table-column label="数量">
+          <el-table-column label="单价" align="center">
+            <template slot-scope="scope">
+              <span>￥{{ scope.row.singlePrice }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="数量" align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.count }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="小计">
+          <el-table-column label="小计" align="center">
             <template slot-scope="scope">
-              <span>￥{{ subTotal(scope.row.count, scope.row.price) }}</span>
+              <span>￥{{ scope.row.totalPrice }}</span>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <h3 class="box-title">支付方式</h3>
       <div class="box-body">
-        <a href="javascript:;" class="payment">微信支付</a>
-        <a href="javascript:;" class="payment">支付宝</a>
+        <el-checkbox name="payment" v-model="payment" class="checkbox_payment" style="margin-top: 0">微信支付</el-checkbox>
+        <el-checkbox name="payment" v-model="payment" class="checkbox_payment">支付宝</el-checkbox>
       </div>
       <h3 class="box-title">金额明细</h3>
       <div class="box-body">
@@ -184,6 +194,15 @@ export default {
       this.addressTable = Array.from(res.data)
       this.addressForm = this.addressTable[0] // 把第一条地址赋给addressForm
     })
+    service({
+      url: '/cart/getAll',
+      method: 'GET',
+      params: {
+        id: JSON.parse(localStorage.getItem('userInfo')).id
+      }
+    }).then((res) => {
+      this.cartItemFrontVoList = Array.from(res.data.cartItemFrontVoList)
+    })
   },
   data () {
     return {
@@ -196,14 +215,7 @@ export default {
       addressTable: [],
       dialogClick: -1,
       methodWay: 0,
-      cartItemFrontVoList: [
-        {
-          prodName: 'xuye',
-          price: 900,
-          attr: 'dddd',
-          count: 40
-        }
-      ],
+      cartItemFrontVoList: [],
       BaseUrl
     }
   },
@@ -261,15 +273,30 @@ export default {
       let i = Object.values(this.addressForm).filter(
         (item) => item === ''
       ).length
-      if (i === 0) {
-        return false
-      }
-      return true
+      return i !== 0
     }
   }
 }
 </script>
 <style lang="less" scoped>
+.goods_name {
+  font-size: 16px;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  line-height: 160%;
+  margin: 7% 7% 0 7%;
+}
+
+.checkbox_payment {
+  width: 233px;
+  height: 42px;
+  line-height: 42px;
+  background-color: rgba(23, 233, 233, 0.3);
+  border-radius: 1em;
+  padding-left: 10px;
+  margin-top: 10px;
+  margin-left: 10%;
+}
+
 .checkout {
   padding: 0 20px;
 
@@ -330,7 +357,7 @@ export default {
         width: 420px;
         text-align: center;
 
-        .addressbtn {
+        .addressBtn {
           width: 140px;
           height: 46px;
           line-height: 44px;

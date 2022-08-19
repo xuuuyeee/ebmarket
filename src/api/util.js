@@ -8,6 +8,6 @@
 //     let time = year + "-" + month + "-" + day+'T'+mytime;
 //     return time
 //   }
-module.exports ={
-   BaseUrl: 'http://localhost:8080'
+module.exports = {
+  BaseUrl: 'http://localhost:8080'
 }
