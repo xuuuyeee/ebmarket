@@ -22,7 +22,7 @@
           >
             <el-image
               :src="BaseUrl + goodInfo.list[selectedImageNum]"
-              style="max-width: 100%; max_height: 100%; vertical-align: middle"
+              style="max-width: 100%; max-height: 100%; vertical-align: middle"
             ></el-image>
             <div
               class="image_layer"
@@ -37,7 +37,7 @@
           <ul class="small_image" @mouseover="checkPic($event)">
             <li
               v-for="(obj, index) in goodInfo.list"
-              :class="{ active_image: selectedImageNum == index }"
+              :class="{ active_image: selectedImageNum === index }"
               :key="index"
               :data-index="index"
             >
@@ -109,22 +109,22 @@
       <div class="good_tabs">
         <nav>
           <a
-            href="javascript:;"
+            href="javascript:"
             @click="
               comName = 'GoodDetail';
               isTabClick = true;
             "
             :class="{ active_tab: isTabClick }"
-            >商品详情</a
+          >商品详情</a
           >
           <a
-            href="javascript:;"
+            href="javascript:"
             @click="
               comName = 'GoodComment';
               isTabClick = false;
             "
             :class="{ active_tab: !isTabClick }"
-            >商品评价
+          >商品评价
             <span>0</span>
           </a>
         </nav>
@@ -191,7 +191,7 @@ export default {
     }
   },
   watch: {
-    $route (to, from) {
+    $route () {
       this.sort = this.$route.params.sort
       this.getData(this.sort)
     }
@@ -256,7 +256,7 @@ export default {
                 totalPrice: price * num,
                 id: tmp.id
               }
-            }).then((res) => {
+            }).then(() => {
               this.$message('商品添加购物车完成')
             })
           } else {
@@ -330,8 +330,9 @@ export default {
       })
       const cutString = (str) => {
         const arr = Array.from(str.split(';').slice(1))
-        if (arr[0] === '') return []
-        else {
+        if (arr[0] === '') {
+          return []
+        } else {
           const ans = []
           arr.forEach((item) => {
             const str = Array.from(item.split(':'))
@@ -379,16 +380,19 @@ export default {
   min-height: 600px;
   background-color: #fff;
   display: flex;
+
   .good_media {
     width: 580px;
     height: 600px;
     padding: 30px 50px;
+
     .good_images {
       width: 480px;
       height: 480px;
       position: relative;
       display: flex;
       z-index: 500;
+
       .large_image {
         position: absolute;
         top: 0;
@@ -401,12 +405,14 @@ export default {
         background-color: #f8f8f8;
         z-index: 3000;
       }
+
       .middle_image {
         width: 400px;
         height: 400px;
         background-color: #f5f5f5;
         position: relative;
         cursor: move;
+
         .image_layer {
           position: absolute;
           width: 200px;
@@ -416,8 +422,10 @@ export default {
           top: 0;
         }
       }
+
       .small_image {
         width: 80px;
+
         li {
           width: 68px;
           height: 68px;
@@ -425,45 +433,56 @@ export default {
           margin-bottom: 15px;
           cursor: pointer;
         }
+
         .active_image {
           border: 2px solid #27ba9b;
         }
       }
     }
   }
+
   .spec {
     flex: 1;
     padding: 30px 30px 30px 0;
+
     .good_title {
       font-size: 22px;
     }
+
     .good_desc {
       color: #999;
       margin-top: 10px;
     }
+
     .good_price {
       margin-top: 10px;
+
       span {
         color: #cf4444;
         margin-right: 10px;
         font-size: 22px;
       }
     }
+
     .goods_sku {
       padding-left: 10px;
       padding-top: 20px;
+
       dl {
         display: flex;
         padding-bottom: 20px;
         align-items: center;
         justify-content: left;
+
         dt {
           width: 50px;
           color: #999;
         }
+
         dd {
           flex: 1;
           color: #666;
+
           img {
             width: 50px;
             height: 50px;
@@ -471,6 +490,7 @@ export default {
             margin-right: 10px;
             cursor: pointer;
           }
+
           span {
             display: inline-block;
             height: 30px;
@@ -483,6 +503,7 @@ export default {
         }
       }
     }
+
     .elInput {
       width: 60px;
       color: #999;
@@ -490,28 +511,34 @@ export default {
     }
   }
 }
+
 .good_tabs {
   width: 100%;
   min-height: 600px;
   background-color: #fff;
+
   nav {
     height: 70px;
     line-height: 70px;
     display: flex;
     border-bottom: 1px solid #f5f5f5;
+
     a {
       padding: 0 40px;
       font-size: 18px;
       position: relative;
+
       &:first-child {
         border-right: 1px solid #f5f5f5;
       }
+
       > span {
         color: #cf4444;
         font-size: 16px;
         margin-left: 10px;
       }
     }
+
     .active_tab::before {
       content: "";
       position: absolute;
@@ -523,12 +550,14 @@ export default {
     }
   }
 }
+
 .good_warn {
   min-height: 300px;
   background: #fff;
   margin-top: 20px;
   margin-bottom: 20px;
   padding-bottom: 40px;
+
   h3 {
     height: 70px;
     line-height: 70px;
@@ -538,11 +567,13 @@ export default {
     font-weight: normal;
     margin-bottom: 10px;
   }
+
   p {
     line-height: 40px;
     padding: 0 25px;
     color: #666;
   }
+
   .tit {
     color: #333;
   }
