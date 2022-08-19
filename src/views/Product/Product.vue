@@ -61,12 +61,6 @@
           <span>{{ goodInfo.good_price.toFixed(2) }}</span>
         </p>
         <div class="goods_sku">
-          <!-- <dl v-for="(obj, index) in goodInfo.goodAttribute" :key="index">
-            <dt>{{ index }}</dt>
-            <dd>
-              <span v-for="item in obj" :key="item">{{ item }}</span>
-            </dd>
-          </dl> -->
           <el-form>
             <el-form-item
               v-for="(obj, index) in goodInfo.goodAttribute"
@@ -160,103 +154,102 @@
   </div>
 </template>
 <script>
-import { BaseUrl } from "@/api/util";
-import service from "@/api";
-import Recommend from "../ShopCraft/Recommend/Recommend.vue";
-import GoodComment from "./GoodComment.vue";
-import GoodDetail from "./GoodDetail.vue";
-import axios from "axios";
+import { BaseUrl } from '@/api/util'
+import service from '@/api'
+import Recommend from '../ShopCraft/Recommend/Recommend.vue'
+import GoodComment from './GoodComment.vue'
+import GoodDetail from './GoodDetail.vue'
+
 export default {
-  created() {
-    this.sort = this.$route.params["sort"];
-    this.getData(this.sort);
+  created () {
+    this.sort = this.$route.params.sort
+    this.getData(this.sort)
   },
-  data() {
+  data () {
     return {
       goodInfo: {
         good_id: -1,
-        good_title: "",
-        good_desc: "",
+        good_title: '',
+        good_desc: '',
         good_price: -1,
         list: [],
         commentList: [],
         goodDetailImage: [],
         goodAttribute: {},
-        good_descList: [],
+        good_descList: []
       },
       good_num: 1,
       selectedImageNum: 0,
       isDisplay: false,
       isTabClick: true,
-      comName: "GoodDetail",
+      comName: 'GoodDetail',
       layerX: 0,
       layerY: 0,
       recList: [],
       BaseUrl,
-      select_good_attr: {},
-    };
+      select_good_attr: {}
+    }
   },
   watch: {
-    $route(to, from) {
-      this.sort = this.$route.params["sort"];
-      this.getData(this.sort);
-    },
+    $route (to, from) {
+      this.sort = this.$route.params.sort
+      this.getData(this.sort)
+    }
   },
   methods: {
-    checkPic(event) {
-      if (event.target.tagName === "IMG") {
+    checkPic (event) {
+      if (event.target.tagName === 'IMG') {
         this.selectedImageNum =
-          event.target.parentNode.parentNode.getAttribute("data-index");
+          event.target.parentNode.parentNode.getAttribute('data-index')
       }
     },
-    calPos(event) {
-      const middlePos = event.target.parentNode.getBoundingClientRect();
-      let x = event.pageX - middlePos.left;
-      let y = event.pageY - middlePos.top - document.documentElement.scrollTop;
+    calPos (event) {
+      const middlePos = event.target.parentNode.getBoundingClientRect()
+      const x = event.pageX - middlePos.left
+      const y = event.pageY - middlePos.top - document.documentElement.scrollTop
       if (x >= 0 && x <= 400 && y >= 0 && y <= 400) {
-        let mx = 0,
-          my = 0;
-        if (x < 100) mx = 0;
-        if (x >= 100 && x <= 300) mx = x - 100;
-        if (x > 300) mx = 200;
-        if (y < 100) my = 0;
-        if (y >= 100 && y <= 300) my = y - 100;
-        if (y > 300) my = 200;
-        this.layerX = mx;
-        this.layerY = my;
+        let mx = 0
+        let my = 0
+        if (x < 100) mx = 0
+        if (x >= 100 && x <= 300) mx = x - 100
+        if (x > 300) mx = 200
+        if (y < 100) my = 0
+        if (y >= 100 && y <= 300) my = y - 100
+        if (y > 300) my = 200
+        this.layerX = mx
+        this.layerY = my
       }
     },
-    addCart(id, num, select_list, price) {
-      if (localStorage.getItem("userInfo") != "") {
-        if (Object.values(select_list).some((item) => item.length == 0)) {
-          this.$message("请选择商品的规格后再加入购物车");
-          return;
+    addCart (id, num, selectList, price) {
+      if (localStorage.getItem('userInfo') !== '') {
+        if (Object.values(selectList).some((item) => item.length === 0)) {
+          this.$message('请选择商品的规格后再加入购物车')
+          return
         }
         service({
-          url: "/cart/getAll",
-          method: "GET",
+          url: '/cart/getAll',
+          method: 'GET',
           params: {
-            id: JSON.parse(localStorage.getItem("userInfo")).id,
-          },
+            id: JSON.parse(localStorage.getItem('userInfo')).id
+          }
         }).then((res) => {
-          let { cartItemFrontVoList } = res.data;
-          let arrStr = Object.keys(select_list)
+          const { cartItemFrontVoList } = res.data
+          const arrStr = Object.keys(selectList)
             .map((item, index) => {
-              return item.concat(":", Object.values(select_list)[index]);
+              return item.concat(':', Object.values(selectList)[index])
             })
-            .join(";");
-          if (!cartItemFrontVoList.every( (item) => item.productId != id || item.attributeValue != arrStr))
-           {
-            let tmp = cartItemFrontVoList.find(
-              (item) => item.productId == id && item.attributeValue == arrStr
+            .join(';')
+          if (!cartItemFrontVoList.every((item) => item.productId !== id || item.attributeValue !== arrStr)) {
+            const tmp = cartItemFrontVoList.find(
+              (item) => item.productId === id && item.attributeValue === arrStr
             )
             num = num + tmp.count
             service({
-              url: "/cartItem",
-              method: "PUT",
+              url: '/cartItem',
+              method: 'PUT',
               data: {
                 attributeValue: arrStr,
-                cartId: JSON.parse(localStorage.getItem("userCartInfo")).id,
+                cartId: JSON.parse(localStorage.getItem('userCartInfo')).id,
                 count: num,
                 productId: id,
                 singlePrice: price,
@@ -264,41 +257,39 @@ export default {
                 id: tmp.id
               }
             }).then((res) => {
-              this.$message("商品添加购物车完成");
-            });
-          }
-          else{
+              this.$message('商品添加购物车完成')
+            })
+          } else {
             service({
-              url:'/cartItem',
+              url: '/cartItem',
               method: 'POST',
-              data:{
+              data: {
                 attributeValue: arrStr,
-                cartId: JSON.parse(localStorage.getItem("userCartInfo")).id,
+                cartId: JSON.parse(localStorage.getItem('userCartInfo')).id,
                 count: num,
                 productId: id,
                 singlePrice: price,
-                totalPrice: price * num,
+                totalPrice: price * num
               }
             }).then(res => {
-              console.log(res.data);
+              console.log(res.data)
               this.$message('商品添加购物车完成')
             })
           }
         })
       } else {
-        this.$message("登录后才能购物哦");
-        return;
+        this.$message('登录后才能购物哦')
       }
     },
-    getData(sort) {
+    getData (sort) {
       service({
-        url: "/product/getOne",
-        method: "GET",
+        url: '/product/getOne',
+        method: 'GET',
         params: {
-          id: sort,
-        },
+          id: sort
+        }
       }).then((res) => {
-        let {
+        const {
           prodName,
           description,
           attributeList,
@@ -306,81 +297,81 @@ export default {
           id,
           mainImagePosition,
           categoryId,
-          detailImagePosition,
-        } = res.data;
-        this.goodInfo.good_id = id;
-        this.goodInfo.good_title = prodName;
-        this.goodInfo.good_price = price;
-        this.goodInfo.list = mainImagePosition;
-        this.goodInfo.goodDetailList = attributeList.split(";")[0];
-        this.goodInfo.good_desc = description.split(";")[0];
-        this.goodInfo.good_descList = cutString(description);
-        this.goodInfo.goodDetailImage = detailImagePosition;
-        this.goodInfo.goodAttribute = cutAttr(attributeList);
+          detailImagePosition
+        } = res.data
+        this.goodInfo.good_id = id
+        this.goodInfo.good_title = prodName
+        this.goodInfo.good_price = price
+        this.goodInfo.list = mainImagePosition
+        this.goodInfo.goodDetailList = attributeList.split(';')[0]
+        this.goodInfo.good_desc = description.split(';')[0]
+        this.goodInfo.good_descList = cutString(description)
+        this.goodInfo.goodDetailImage = detailImagePosition
+        this.goodInfo.goodAttribute = cutAttr(attributeList)
         service({
-          url: "/product/getBySame",
-          method: "GET",
+          url: '/product/getBySame',
+          method: 'GET',
           params: {
-            id: categoryId,
-          },
+            id: categoryId
+          }
         }).then((res) => {
-          this.recList = [];
+          this.recList = []
           for (let i = 0, j = 0; i < res.data.length; i++) {
-            if ((i + 1) % 4 == 0 || i == 0) {
-              this.recList.push([]);
-              if (i != 0) j++;
+            if ((i + 1) % 4 === 0 || i === 0) {
+              this.recList.push([])
+              if (i !== 0) j++
             }
             this.recList[j].push({
               id: res.data[i].id,
-              imgSrc: res.data[i].mainImagePosition[0],
-            });
+              imgSrc: res.data[i].mainImagePosition[0]
+            })
           }
-        });
-      });
-      let cutString = (str) => {
-        let arr = Array.from(str.split(";").slice(1));
-        if (arr[0] == "") return [];
+        })
+      })
+      const cutString = (str) => {
+        const arr = Array.from(str.split(';').slice(1))
+        if (arr[0] === '') return []
         else {
-          let ans = [];
+          const ans = []
           arr.forEach((item) => {
-            let str = Array.from(item.split(":"));
+            const str = Array.from(item.split(':'))
             ans.push({
               name: str[0],
-              content: str[1],
-            });
-          });
-          return ans;
+              content: str[1]
+            })
+          })
+          return ans
         }
-      };
-      let cutAttr = (str) => {
-        let arr = Array.from(str.split(";"));
-        let ans = [];
+      }
+      const cutAttr = (str) => {
+        const arr = Array.from(str.split(';'))
+        const ans = []
         arr.forEach((item) => {
-          let tmparr = [];
-          let attrName = item.split(":")[0] ? item.split(":")[0] : "";
-          let contentarr = Array.from(item.split(":")[1].split(","));
+          const tmparr = []
+          const attrName = item.split(':')[0] ? item.split(':')[0] : ''
+          const contentarr = Array.from(item.split(':')[1].split(','))
           contentarr.forEach((item, index) =>
             tmparr.push({
               label: `${attrName + (index + 1)}`,
-              value: item,
+              value: item
             })
-          );
+          )
           ans.push({
             label: attrName,
-            attrList: tmparr,
-          });
-          this.$set(this.select_good_attr, attrName, "");
-        });
-        return ans;
-      };
-    },
+            attrList: tmparr
+          })
+          this.$set(this.select_good_attr, attrName, '')
+        })
+        return ans
+      }
+    }
   },
   components: {
     Recommend,
     GoodDetail,
-    GoodComment,
-  },
-};
+    GoodComment
+  }
+}
 </script>
 <style lang="less" scoped>
 .good_show {
