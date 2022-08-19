@@ -88,9 +88,12 @@
             @keydown.enter="searchGoods()"
           />
         </div>
-        <router-link to="/cart">
+        <router-link
+          :to="canGoCart() ? { name: 'cart' } : { name: 'login' }"
+          @click.prevent="canGoCart()"
+        >
           <div class="car">
-            <span>2</span>
+            <span>0</span>
           </div>
         </router-link>
       </div>
@@ -188,11 +191,13 @@ export default {
   methods: {
     searchGoods() {},
     fn(num) {
-      eventBus.$emit("send", this.commonHeaderList[num])
-      // localStorage.setItem(
-      //   "categorylist",
-      //   JSON.stringify(this.commonHeaderList[num])
-      // );   
+      eventBus.$emit("send", this.commonHeaderList[num]);
+    },
+    canGoCart() {
+      if (localStorage.getItem("userInfo") == '') { 
+        return false;
+      }
+      return true;
     },
   },
 };

@@ -43,6 +43,7 @@
 </template>
 <script>
 import service from '@/api/index'
+import axios from 'axios';
 export default {
   name: "LoginMain",
   data() {
@@ -81,6 +82,15 @@ export default {
           if (res.code == 1) {
             const userInfo = res.data;
             localStorage.setItem("userInfo", JSON.stringify(userInfo));
+            service({
+              url: '/cart/getByUserId',
+              method: 'GET',
+              params:{
+                id : res.data.id
+              }
+            }).then( result => {
+                localStorage.setItem('userCartInfo',JSON.stringify(result.data));
+            })
             this.$router.replace("/home");
           } else {
             this.$alert("用户名与密码输入错误", "提示", {

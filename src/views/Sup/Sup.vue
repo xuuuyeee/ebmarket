@@ -22,13 +22,13 @@
     <div style="margin-top: 25px" class="filter_button_group">
       <ul style="display: flex; margin: 0 40px">
         <li>
-          <button @click="sortByid()">默认排序</button>
+          <button @click="sortByid()"  :style="{border: (isActive != 1  ? '1px solid #e4e4e4' : '1px solid #5eb69c')}">默认排序</button>
         </li>
         <li>
-          <button @click="sortByCreateTime()">最新商品</button>
+          <button @click="sortByCreateTime()" :style="{border: (isActive != 2 ? '1px solid #e4e4e4' : '1px solid #5eb69c')}">最新商品</button>
         </li>
         <li>
-          <button @click="sortByPrice()">价格排序</button>
+          <button @click="sortByPrice()" :style="{border: (isActive != 3  ? '1px solid #e4e4e4' : '1px solid #5eb69c')}">价格排序</button>
         </li>
       </ul>
     </div>
@@ -60,6 +60,7 @@ export default {
       ],
       way: "",
       sort: -1,
+      isActive: 0
     };
   },
   watch: {
@@ -119,12 +120,15 @@ export default {
       }
     },
     sortByid(){
+      this.isActive = 1;
       this.list.sort((a,b) => a.id - b.id);
     },
     sortByCreateTime(){
+      this.isActive = 2;
       this.list.sort((a,b) => Date.parse(a.createTime) - Date.parse(b.createTime))
     },
     sortByPrice(){
+      this.isActive = 3;
       this.list.sort((a,b) => a.price - b.price)
     }
   },
@@ -173,10 +177,13 @@ export default {
         color: #999;
         border-radius: 2px;
         position: relative;
-        transition: all 0.3s;
+        // transition: all 0.3s;
         background: #fff;
       }
     }
   }
 }
+// .active{
+//   border: 1px solid #5eb69c;
+// }
 </style>

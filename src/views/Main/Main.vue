@@ -19,8 +19,8 @@
     <!-- 生鲜 -->
 
     <topic-div
-      v-for="(topic, index) in topicList.slice(2,6)"
-      :key="index"
+      v-for="(topic,index) in topicList.slice(2,6)"
+      :key="topic.id"
       :topic="topic"
       :coverPic="coverPic[index].imgSrc"
       :goodsData="topicGoodList[2+index]"

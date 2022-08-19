@@ -34,7 +34,7 @@ const routes = [
       {
         path: '/category/:sort',
         component: () => import('@/views/Category/Category.vue'),
-        name: 'category',
+        name: 'category'
       },
       {
         path: '/category/sub/:way/:sort',
@@ -51,7 +51,7 @@ const routes = [
         component: () => import('@/views/User/User.vue'),
         name: 'user',
         redirect: '/user/userInfo',
-        children:[
+        children: [
           {
             path: 'userInfo',
             component: () => import('@/views/User/Component/UserInfo.vue'),
@@ -63,12 +63,12 @@ const routes = [
             name: 'userSafe'
           },
           {
-            path: 'userAdress',
-            component: () => import('@/views/User/Component/UserAdress.vue'),
-            name: 'userAdress'
+            path: 'userAddress',
+            component: () => import('@/views/User/Component/UserAddress.vue'),
+            name: 'userAddress'
           }
         ]
-      },
+      }
     ]
   }
 ]
