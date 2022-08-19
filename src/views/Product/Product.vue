@@ -131,7 +131,7 @@
             "
             :class="{ active_tab: !isTabClick }"
             >商品评价
-            <span>0</span>
+            <span>{{commentCount}}</span>
           </a>
         </nav>
         <component
@@ -165,7 +165,6 @@ import service from "@/api";
 import Recommend from "../ShopCraft/Recommend/Recommend.vue";
 import GoodComment from "./GoodComment.vue";
 import GoodDetail from "./GoodDetail.vue";
-import axios from "axios";
 export default {
   created() {
     this.sort = this.$route.params["sort"];
@@ -245,12 +244,15 @@ export default {
               return item.concat(":", Object.values(select_list)[index]);
             })
             .join(";");
-          if (!cartItemFrontVoList.every( (item) => item.productId != id || item.attributeValue != arrStr))
-           {
+          if (
+            !cartItemFrontVoList.every(
+              (item) => item.productId != id || item.attributeValue != arrStr
+            )
+          ) {
             let tmp = cartItemFrontVoList.find(
               (item) => item.productId == id && item.attributeValue == arrStr
-            )
-            num = num + tmp.count
+            );
+            num = num + tmp.count;
             service({
               url: "/cartItem",
               method: "PUT",
@@ -261,30 +263,28 @@ export default {
                 productId: id,
                 singlePrice: price,
                 totalPrice: price * num,
-                id: tmp.id
-              }
+                id: tmp.id,
+              },
             }).then((res) => {
               this.$message("商品添加购物车完成");
             });
-          }
-          else{
+          } else {
             service({
-              url:'/cartItem',
-              method: 'POST',
-              data:{
+              url: "/cartItem",
+              method: "POST",
+              data: {
                 attributeValue: arrStr,
                 cartId: JSON.parse(localStorage.getItem("userCartInfo")).id,
                 count: num,
                 productId: id,
                 singlePrice: price,
                 totalPrice: price * num,
-              }
-            }).then(res => {
-              console.log(res.data);
-              this.$message('商品添加购物车完成')
-            })
+              },
+            }).then((res) => {
+              this.$message("商品添加购物车完成");
+            });
           }
-        })
+        });
       } else {
         this.$message("登录后才能购物哦");
         return;
@@ -298,6 +298,7 @@ export default {
           id: sort,
         },
       }).then((res) => {
+        // console.log(res.data);
         let {
           prodName,
           description,
@@ -335,6 +336,25 @@ export default {
               imgSrc: res.data[i].mainImagePosition[0],
             });
           }
+          service({
+            url: "/comment/getByProduct",
+            method: "GET",
+            params: {
+              id: this.goodInfo.good_id,
+            },
+          }).then((res) => {
+            console.log(res.data);
+            this.goodInfo.commentList = [];
+            for(let i=0;i<res.data.length;i++){
+                this.goodInfo.commentList.push({
+                  attributeName: res.data[i].attributeName,
+                  description: res.data[i].description,
+                  level: res.data[i].level,
+                  username: res.data[i].username,
+                  createTime: res.data[i].createTime
+              })
+            }
+          });
         });
       });
       let cutString = (str) => {
@@ -380,6 +400,11 @@ export default {
     GoodDetail,
     GoodComment,
   },
+  computed:{
+   commentCount(){
+     return this.goodInfo.commentList.length
+   }
+  }
 };
 </script>
 <style lang="less" scoped>

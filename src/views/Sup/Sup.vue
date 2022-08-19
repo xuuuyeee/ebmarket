@@ -73,6 +73,7 @@ export default {
   created() {
     this.sort = this.$route.params["sort"];
     this.way = this.$route.params["way"];
+    this.list = [];
     this.getData(this.way, this.sort);
   },
   methods: {
@@ -129,7 +130,7 @@ export default {
     },
     sortByPrice(){
       this.isActive = 3;
-      this.list.sort((a,b) => a.price - b.price)
+      this.list.sort((a,b) => b.price - a.price)
     }
   },
 };

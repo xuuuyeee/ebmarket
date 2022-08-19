@@ -5,10 +5,10 @@
       style="margin-top: 30px; margin-bottom: 20px"
     >
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item><a href="/">购物车</a></el-breadcrumb-item>
+      <el-breadcrumb-item><a href="#">购物车</a></el-breadcrumb-item>
     </el-breadcrumb>
     <el-main style="background: #fff" class="wrapper">
-      <el-table :data="list">
+      <el-table :data="cartItemFrontVoList">
         <el-table-column label="选择" width="150">
           <template slot-scope="scope">
             <input type="checkbox" v-model="scope.row.state" />
@@ -18,9 +18,8 @@
           <template slot-scope="scope">
             <div style="display: flex">
               <el-image
-                :src="scope.row.imgSrc"
+                :src="BaseUrl+scope.row.imagePosition"
                 style="width: 100px; height: 100px; display: inline-block"
-                :fit="scale - done"
               ></el-image>
               <div class="goods_name">
                 <span>{{ scope.row.goods_name }}</span>
@@ -34,7 +33,7 @@
           <template slot-scope="scope">
             <el-input-number
               v-model="scope.row.count"
-              @change.native="changeNum"
+              @change.native="changeNum()"
               :min="1"
               size="small"
             ></el-input-number>
@@ -79,7 +78,9 @@
   </el-container>
 </template>
 <script>
+import service from '@/api';
 import Recommend from "./Recommend/Recommend.vue";
+import { BaseUrl } from '@/api/util'
 export default {
   data() {
     return {
@@ -117,6 +118,8 @@ export default {
           "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
         ],
       ],
+      cartItemFrontVoList:[],
+      BaseUrl
     };
   },
   computed: {
@@ -151,10 +154,35 @@ export default {
     delGood(index) {
       this.list.splice(index, 1);
     },
+    changeNum(){
+
+    },
+    updateCart(){
+      service({
+        url: '/cart/getAll',
+        method: 'GET',
+        params: { id: JSON.parse(localStorage.getItem('userInfo')).id }
+      }).then( res => {
+        console.log(res.data);
+         for(let i=0;i<res.data.length;i++){
+            this.cartItemFrontVoList.push({
+              prodName: res.data[i].prodName,
+              attr: res.data[i].attributeValue,
+              count: res.data[i].count,
+              imagePosition: res.data[i].imagePosition,
+              cartItemId: res.data[i].id,
+              state: true
+            })
+         }
+      })
+    }
   },
   components: {
     Recommend,
   },
+  created(){
+    this.updateCart()      
+  }
 };
 </script>
 <style lang="less" scoped>
