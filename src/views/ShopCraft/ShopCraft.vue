@@ -78,7 +78,6 @@
   </el-container>
 </template>
 <script>
-import eventBus from "@/EventBus/index";
 import service from "@/api";
 import Recommend from "./Recommend/Recommend.vue";
 import { BaseUrl } from "@/api/util";
@@ -186,24 +185,27 @@ export default {
         method: "GET",
         params: { id: JSON.parse(localStorage.getItem("userInfo")).id },
       }).then((res) => {
+        console.log(res.data);
         this.cartItemFrontVoList = [];
         for (let i = 0; i < res.data.cartItemFrontVoList.length; i++) {
           this.cartItemFrontVoList.push({
+            cartId: res.data.cartItemFrontVoList[i].cartId,
             prodName: res.data.cartItemFrontVoList[i].productName,
             attr: res.data.cartItemFrontVoList[i].attributeValue,
             count: res.data.cartItemFrontVoList[i].count,
             imagePosition: res.data.cartItemFrontVoList[i].imagePosition,
             cartItemId: res.data.cartItemFrontVoList[i].id,
-            state: true,
             price: res.data.cartItemFrontVoList[i].singlePrice,
+            productId: res.data.cartItemFrontVoList[i].productId,
+            createTime:res.data.cartItemFrontVoList[i].createTime,
+            updateTime:res.data.cartItemFrontVoList[i].updateTime,
+            isDeleted: res.data.cartItemFrontVoList[i].isDeleted,
+            state: true
           });
         }
       });
     },
     checkList() {
-      // let tmpList = this.cartItemFrontVoList.filter(item => item.state == true).map(item => item.cartItemId);
-      // console.log(tmpList);
-      // eventBus.$emit('checkout', this.cartItemFrontVoList.filter(item => item.state == true))
       console.log(
         "这里是购物车",
         this.cartItemFrontVoList.filter((item) => item.state == true)

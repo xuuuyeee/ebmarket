@@ -278,20 +278,38 @@ export default {
       );
     },
     placeOrder() {
-      const cartItemFrontVoList = {
-        userId: JSON.parse(localStorage.getItem("userInfo")).id,
+      const cartItemGoodList = [];
+      console.log(this.cartItemFrontVoList);
+      this.cartItemFrontVoList.forEach(item => {
+        let {attr,cartItemId,count,imagePosition,price,prodectId,cartId,createTime,updateTime,isDeleted} = item
+        cartItemGoodList.push({
+          attributeValue: attr,
+          imagePosition,
+          singlePrice:price,
+          totalPrice: price * count,
+          prodectId,
+          cartId,
+          id:cartItemId,
+          createTime,
+          updateTime,
+          isDeleted,
+          count
+        })
+      })
+      const postList = {
+        user_id: JSON.parse(localStorage.getItem("userInfo")).id,
         consignee: this.addressForm.consignee,
         telephone: this.addressForm.telephone,
         position: this.addressForm.position,
         payment: this.payment,
-        totalCount: this.totalCount(),
-        totalPrice: this.totalPrice(),
-        
+        total_count: this.totalCount(),
+        total_price: this.totalPrice(),     
       };
       service({
         url: "/order/placeOrder",
         method: "PUT",
-        data: { cartItemFrontVoList },
+        data: cartItemGoodList ,
+        params: postList 
       }).then((res) => {
         console.log(res);
         this.$message("下单成功");
