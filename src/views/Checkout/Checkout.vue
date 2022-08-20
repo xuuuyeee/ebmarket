@@ -18,7 +18,7 @@
                 dialog = 2;
                 methodWay = 1;
               "
-            >修改地址</a
+              >修改地址</a
             >
             <div class="none" v-else>您需要先添加收货地址才可提交订单。</div>
           </div>
@@ -52,7 +52,8 @@
                 :key="index"
                 :style="{
                   'border-color': dialogClick === index ? '#27ba9b' : 'f5f5f5',
-                  'background-color': dialogClick === index ? '#e6faf6' : '#fff',
+                  'background-color':
+                    dialogClick === index ? '#e6faf6' : '#fff',
                 }"
                 @click="dialogClick = index"
               >
@@ -109,22 +110,22 @@
         <el-table :data="cartItemFrontVoList">
           <el-table-column label="商品信息" width="400" align="center">
             <template slot-scope="scope">
-              <div style="display: flex; justify-content:center">
+              <div style="display: flex; justify-content: center">
                 <el-image
-                  :src="BaseUrl+scope.row.imagePosition"
+                  :src="BaseUrl + scope.row.imagePosition"
                   style="width: 100px; height: 100px; display: inline-block"
                 ></el-image>
                 <div class="goods_name">
-                  <span>{{ scope.row.productName }}</span>
-                  <br>
-                  <span>{{ scope.row.attributeValue }}</span>
+                  <span>{{ scope.row.prodName }}</span>
+                  <br />
+                  <span>{{ scope.row.attr }}</span>
                 </div>
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="单价" align="center">
+          <el-table-column label="单价" align="center" prop="price">
             <template slot-scope="scope">
-              <span>￥{{ scope.row.singlePrice }}</span>
+              <span>￥{{ scope.row.price }}</span>
             </template>
           </el-table-column>
           <el-table-column label="数量" align="center">
@@ -134,7 +135,7 @@
           </el-table-column>
           <el-table-column label="小计" align="center">
             <template slot-scope="scope">
-              <span>￥{{ scope.row.totalPrice }}</span>
+              <span>￥{{ subTotal(scope.row.price, scope.row.count) }}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -147,7 +148,8 @@
           value="WeChatPay"
           v-model="payment"
           class="checkbox_payment"
-          style="margin-top: 0">
+          style="margin-top: 0"
+        />
         <label for="WeChatPay" class="checkbox_payment_label">微信支付</label>
         <input
           type="radio"
@@ -155,22 +157,20 @@
           value="AliPay"
           v-model="payment"
           class="checkbox_payment"
-          style="margin-top: 0">
+          style="margin-top: 0"
+        />
         <label for="AliPay" class="checkbox_payment_label">支付宝支付</label>
       </div>
       <h3 class="box-title">金额明细</h3>
       <div class="box-body div_center">
         <div class="total">
-          <!-- <label>商品件数：{{ TotalCount() }}件</label>
-          <br>
-          <label>商品总价：￥{{ TotalPrice() }}</label> -->
           <dl>
             <dt>商品件数：</dt>
-            <dd>{{TotalCount()}}件</dd>
+            <dd>{{ totalCount() }}件</dd>
           </dl>
           <dl>
             <dt>商品总价：</dt>
-            <dd class="totalPrice">￥{{ TotalPrice() }}</dd>
+            <dd class="totalPrice">￥{{ totalPrice() }}</dd>
           </dl>
         </div>
       </div>
@@ -181,163 +181,138 @@
   </div>
 </template>
 <script>
-import service from '@/api/index'
-import eventBus from '@/EventBus/index'
-import { BaseUrl } from '@/api/util'
+import service from "@/api/index";
+import { BaseUrl } from "@/api/util";
 
 export default {
-  created () {
+  created() {
+    this.cartItemFrontVoList = JSON.parse(
+      localStorage.getItem("cartItemFrontVoList")
+    );
+    console.log(this.cartItemFrontVoList);
     service({
-      url: '/address/getByUser',
-      method: 'GET',
+      url: "/address/getByUser",
+      method: "GET",
       params: {
-        id: JSON.parse(localStorage.getItem('userInfo')).id
-      }
+        id: JSON.parse(localStorage.getItem("userInfo")).id,
+      },
     }).then((res) => {
-      this.addressTable = Array.from(res.data)
-      this.addressForm = this.addressTable[0] // 把第一条地址赋给addressForm
-    })
-    // service({
-    //   url: '/cart/getAll',
-    //   method: 'GET',
-    //   params: {
-    //     id: JSON.parse(localStorage.getItem('userInfo')).id
-    //   }
-    // }).then((res) => {
-    //   this.cartItemFrontVoList = Array.from(res.data.cartItemFrontVoList)
-    //   this.cartItemSelectList = Array.from(this.cartItemFrontVoList, ({ id }) => id)
-    // })
+      this.addressTable = Array.from(res.data);
+      this.addressForm = this.addressTable[0]; // 把第一条地址赋给addressForm
+    });
   },
-  data () {
+  data() {
     return {
       addressForm: {
-        consignee: '',
-        telephone: '',
-        position: ''
+        consignee: "",
+        telephone: "",
+        position: "",
       },
-      payment: '',
+      payment: "",
       dialog: 0,
       addressTable: [],
       dialogClick: -1,
       methodWay: 0,
       cartItemFrontVoList: [],
-      cartItemSelectList: [],
-      totalCount: 0,
-      totalPrice: 0,
-      BaseUrl
-    }
+      BaseUrl,
+    };
   },
   methods: {
-    changePosition (index) {
-      this.addressForm.position = this.addressTable[index].position
-      this.addressForm.consignee = this.addressTable[index].consignee
-      this.addressForm.telephone = this.addressTable[index].telephone
-      this.addressForm.id = this.addressTable[index].id
-      this.dialog = 0
+    changePosition(index) {
+      this.addressForm.position = this.addressTable[index].position;
+      this.addressForm.consignee = this.addressTable[index].consignee;
+      this.addressForm.telephone = this.addressTable[index].telephone;
+      this.addressForm.id = this.addressTable[index].id;
+      this.dialog = 0;
     },
-    updateAddress () {
+    updateAddress() {
       if (this.methodWay === 1) {
         service({
-          url: '/address',
-          method: 'PUT',
-          data: {
-            ...this.addressForm
-          }
-        }).then((res) => {
-          this.$message('收货人信息修改成功')
-          this.dialog = 0
-          this.methodWay = 0
-          const index = this.addressTable.findIndex(
-            (item) => item.id === res.data.id
-          )
-          this.$set(this.addressTable, index, { ...this.addressForm })
-        })
-      } else if (this.methodWay === 2) {
-        this.addressForm.consignee = ''
-        this.addressForm.position = ''
-        this.addressForm.telephone = ''
-        service({
-          url: '/address',
-          method: 'POST',
+          url: "/address",
+          method: "PUT",
           data: {
             ...this.addressForm,
-            userId: JSON.parse(localStorage.getItem('userInfo')).id
-          }
+          },
         }).then((res) => {
-          console.log(res)
-          this.$message('收货人信息添加成功')
-          this.addressTable.push({ ...this.addressForm })
-          this.dialog = 0
-          this.methodWay = 0
-        })
+          this.$message("收货人信息修改成功");
+          this.dialog = 0;
+          this.methodWay = 0;
+          const index = this.addressTable.findIndex(
+            (item) => item.id === res.data.id
+          );
+          this.$set(this.addressTable, index, { ...this.addressForm });
+        });
+      } else if (this.methodWay === 2) {
+        this.addressForm.consignee = "";
+        this.addressForm.position = "";
+        this.addressForm.telephone = "";
+        service({
+          url: "/address",
+          method: "POST",
+          data: {
+            ...this.addressForm,
+            userId: JSON.parse(localStorage.getItem("userInfo")).id,
+          },
+        }).then((res) => {
+          console.log(res);
+          this.$message("收货人信息添加成功");
+          this.addressTable.push({ ...this.addressForm });
+          this.dialog = 0;
+          this.methodWay = 0;
+        });
       }
     },
-    subTotal (count, price) {
-      return count * price
+    subTotal(count, price) {
+      return count * price;
     },
-    TotalCount () {
-      let count = 0
-      for (const obj of this.cartItemFrontVoList) {
-        if (this.cartItemSelectList.includes(obj.id)) {
-          count += obj.count
-        }
-      }
-      this.totalCount = count
-      return count
+    totalCount() {
+      return this.cartItemFrontVoList.reduce(
+        (sum, item) => sum + item.count,
+        0
+      );
     },
-    TotalPrice () {
-      let price = 0
-      for (const obj of this.cartItemFrontVoList) {
-        if (this.cartItemSelectList.includes(obj.id)) {
-          price += obj.totalPrice
-        }
-      }
-      this.totalPrice = price
-      return price
+    totalPrice() {
+      return this.cartItemFrontVoList.reduce(
+        (sum, item) => sum + item.price * item.count,
+        0
+      );
     },
-    placeOrder () {
+    placeOrder() {
       const cartItemFrontVoList = {
-        userId: JSON.parse(localStorage.getItem('userInfo')).id,
+        userId: JSON.parse(localStorage.getItem("userInfo")).id,
         consignee: this.addressForm.consignee,
         telephone: this.addressForm.telephone,
         position: this.addressForm.position,
         payment: this.payment,
-        totalCount: this.totalCount,
-        totalPrice: this.totalPrice
-      }
+        totalCount: this.totalCount(),
+        totalPrice: this.totalPrice(),
+        
+      };
       service({
-        url: '/order/placeOrder',
-        method: 'PUT',
-        data: { cartItemFrontVoList }
+        url: "/order/placeOrder",
+        method: "PUT",
+        data: { cartItemFrontVoList },
       }).then((res) => {
-        console.log(res)
-        this.$message('下单成功')
-      })
+        console.log(res);
+        this.$message("下单成功");
+      });
     },
-    acceptData(){
-      eventBus.$on('checkout', (list) => {
-      this.cartItemFrontVoList = list
-      console.log('这里是订单结算',this.cartItemFrontVoList);
-     })
-    }
   },
   computed: {
-    isNone () {
+    isNone() {
       const i = Object.values(this.addressForm).filter(
-        (item) => item === ''
-      ).length
-      return i !== 0
-    }
+        (item) => item === ""
+      ).length;
+      return i !== 0;
+    },
   },
-  mounted(){
-    this.acceptData();
-  }
-}
+};
 </script>
 <style lang="less" scoped>
 .goods_name {
   font-size: 16px;
-  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   line-height: 160%;
   margin: 7% 7% 0 7%;
 }
@@ -580,10 +555,10 @@ export default {
           text-align: right;
           padding-right: 70px;
         }
-        .totalPrice{
-            font-size: 20px;
-            color: #cf4444;
-          }
+        .totalPrice {
+          font-size: 20px;
+          color: #cf4444;
+        }
       }
     }
   }
