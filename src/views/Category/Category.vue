@@ -33,7 +33,8 @@
       <router-link
         :to="{ name: 'sup', params: { way: 'category', sort: item.id } }"
         style="position: absolute; top: 20px; right: 20px"
-        >查看全部 ></router-link
+      >查看全部 >
+      </router-link
       >
       <h3 class="category_title">-{{ item.title }}-</h3>
       <p class="tag">
@@ -60,67 +61,68 @@
 </template>
 <script>
 import eventBus from '@/EventBus/index'
-import service from "@/api";
-import { BaseUrl } from "@/api/util";
+import service from '@/api'
+import { BaseUrl } from '@/api/util'
+
 export default {
-  created() {
-    this.sort = this.$route.params['sort'];
-    eventBus.$on("send",(arr) => {
-        this.category_second = arr
-        this.getData(this.sort);
+  created () {
+    this.sort = this.$route.params['sort']
+    eventBus.$on('send', (arr) => {
+      this.category_second = arr
+      this.getData(this.sort)
     })
   },
-  data() {
+  data () {
     return {
       Carousel_list: [
-        "http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/dfc11bb0-4af5-4e9b-9458-99f615cc685a.jpg",
-        "http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/dfc11bb0-4af5-4e9b-9458-99f615cc685a.jpg",
-        "http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/dfc11bb0-4af5-4e9b-9458-99f615cc685a.jpg",
-        "http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/dfc11bb0-4af5-4e9b-9458-99f615cc685a.jpg",
+        'http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/dfc11bb0-4af5-4e9b-9458-99f615cc685a.jpg',
+        'http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/dfc11bb0-4af5-4e9b-9458-99f615cc685a.jpg',
+        'http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/dfc11bb0-4af5-4e9b-9458-99f615cc685a.jpg',
+        'http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/dfc11bb0-4af5-4e9b-9458-99f615cc685a.jpg',
       ],
       category_second: [],
       category_second_content: [],
       BaseUrl,
       sort: 0
-    };
+    }
   },
   watch: {
-    $route(to, from) {
+    $route (to, from) {
       this.sort = this.$route.params['sort']
-      this.getData(this.sort);
+      this.getData(this.sort)
     },
   },
   methods: {
-    getData(sort) {
+    getData (sort) {
       service({
-        url: "/product/getByCategoryClassify",
-        method: "GET",
+        url: '/product/getByCategoryClassify',
+        method: 'GET',
         params: {
           id: sort
         },
       }).then((res) => {
-        this.category_second_content = [];
+        this.category_second_content = []
         for (let i = 0; i < res.data.length; i++) {
-          this.category_second_content.push([]);
+          this.category_second_content.push([])
           for (let j = 0; j < res.data[i].productVoList.length; j++) {
             this.category_second_content[i].push({
               good_id: res.data[i].productVoList[j].id,
               good_prodName: res.data[i].productVoList[j].prodName,
               good_description:
-                res.data[i].productVoList[j].description.split(";")[0],
+                res.data[i].productVoList[j].description.split(';')[0],
               good_img: res.data[i].productVoList[j].mainImagePosition[0],
               good_price: res.data[i].productVoList[j].price,
-            });
+            })
           }
-        }  
-      }); 
-     
+        }
+      })
+
     },
   },
-  mounted(){
-    this.getData(this.sort);
+  mounted () {
+    this.getData(this.sort)
   }
-};
+}
 </script>
 <style lang="less" scoped>
 .category_title {
@@ -130,6 +132,7 @@ export default {
   text-align: center;
   line-height: 100px;
 }
+
 .category_second_classfic {
   margin-top: 15px;
   background-color: #fff;
@@ -137,8 +140,10 @@ export default {
   padding-bottom: 10px;
   margin-bottom: 25px;
 }
+
 .good_list {
   position: relative;
+
   .tag {
     text-align: center;
     color: #999;
@@ -146,36 +151,44 @@ export default {
     position: relative;
     top: -20px;
   }
+
   .body {
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
     padding: 0 65px 30px;
+
     .good_item {
       display: block;
       width: 220px;
       padding: 20px 30px;
       text-align: center;
       transition: all 0.5s;
+
       p {
         padding-top: 10px;
       }
+
       .name {
         font-size: 16px;
       }
+
       .ellipsis {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
       }
+
       .desc {
         color: #999;
         height: 29px;
       }
+
       .price {
         color: #cf4444;
         font-size: 20px;
       }
+
       &:hover {
         transform: translate3d(0, -3px, 0);
         box-shadow: 0 3px 8px rgb(0 0 0 / 20%);
