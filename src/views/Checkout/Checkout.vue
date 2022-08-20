@@ -11,7 +11,7 @@
               <li><span>收货人地址：</span>{{ addressForm.position }}</li>
             </ul>
             <a
-              href="javascript:;"
+              href="javascript:"
               class="changePosition"
               v-if="!isNone"
               @click="
@@ -80,7 +80,7 @@
           <div class="dia-wrapper" :class="{ 'dia2-fade': dialog === 2 }">
             <div class="header">
               <h3>切换收货地址</h3>
-              <a href="javascript:;"></a>
+              <a href="javascript:"></a>
             </div>
             <div class="body">
               <el-form ref="form" :model="addressForm" label-width="110px">
@@ -109,7 +109,7 @@
         <el-table :data="cartItemFrontVoList">
           <el-table-column label="选择" width="100" align="center">
             <template slot-scope="scope">
-              <input type="checkbox" v-model="!scope.row.isDeleted"/>
+              <input type="checkbox" :id="scope.row.id" :value="scope.row.id" v-model="cartItemSelectList"/>
             </template>
           </el-table-column>
           <el-table-column label="商品信息" width="400" align="center">
@@ -145,29 +145,34 @@
         </el-table>
       </div>
       <h3 class="box-title">支付方式</h3>
-      <div class="box-body">
-        <el-checkbox name="payment" v-model="payment" class="checkbox_payment" style="margin-top: 0">微信支付</el-checkbox>
-        <el-checkbox name="payment" v-model="payment" class="checkbox_payment">支付宝</el-checkbox>
+      <div class="box-body" style="background-color: rgba(42, 42, 42, 0.1)">
+        <input
+          type="radio"
+          id="WeChatPay"
+          value="WeChatPay"
+          v-model="payment"
+          class="checkbox_payment"
+          style="margin-top: 0">
+        <label for="WeChatPay" class="checkbox_payment_label">微信支付</label>
+        <input
+          type="radio"
+          id="AliPay"
+          value="AliPay"
+          v-model="payment"
+          class="checkbox_payment"
+          style="margin-top: 0">
+        <label for="AliPay" class="checkbox_payment_label">支付宝支付</label>
       </div>
       <h3 class="box-title">金额明细</h3>
-      <div class="box-body">
+      <div class="box-body div_center">
         <div class="total">
-          <dl>
-            <dt>商品件数</dt>
-            <dd>x件</dd>
-          </dl>
-          <dl>
-            <dt>商品总价</dt>
-            <dd>￥xxxx</dd>
-          </dl>
-          <dl>
-            <dt>总价</dt>
-            <dd>￥xxxx</dd>
-          </dl>
+          <label>商品件数：{{ TotalCount() }}件</label>
+          <br>
+          <label>商品总价：￥{{ TotalPrice() }}</label>
         </div>
       </div>
       <div class="submit">
-        <button class="submitBtn">结账付款</button>
+        <button class="submitBtn" @click="placeOrder()">结账付款</button>
       </div>
     </div>
   </div>
@@ -202,6 +207,7 @@ export default {
       }
     }).then((res) => {
       this.cartItemFrontVoList = Array.from(res.data.cartItemFrontVoList)
+      this.cartItemSelectList = Array.from(this.cartItemFrontVoList, ({ id }) => id)
     })
   },
   data () {
@@ -211,11 +217,15 @@ export default {
         telephone: '',
         position: ''
       },
+      payment: '',
       dialog: 0,
       addressTable: [],
       dialogClick: -1,
       methodWay: 0,
       cartItemFrontVoList: [],
+      cartItemSelectList: [],
+      totalCount: 0,
+      totalPrice: 0,
       BaseUrl
     }
   },
@@ -239,7 +249,7 @@ export default {
           this.$message('收货人信息修改成功')
           this.dialog = 0
           this.methodWay = 0
-          let index = this.addressTable.findIndex(
+          const index = this.addressTable.findIndex(
             (item) => item.id === res.data.id
           )
           this.$set(this.addressTable, index, { ...this.addressForm })
@@ -266,11 +276,50 @@ export default {
     },
     subTotal (count, price) {
       return count * price
+    },
+    TotalCount () {
+      let count = 0
+      for (const obj of this.cartItemFrontVoList) {
+        if (this.cartItemSelectList.includes(obj.id)) {
+          count += obj.count
+        }
+      }
+      this.totalCount = count
+      return count
+    },
+    TotalPrice () {
+      let price = 0
+      for (const obj of this.cartItemFrontVoList) {
+        if (this.cartItemSelectList.includes(obj.id)) {
+          price += obj.totalPrice
+        }
+      }
+      this.totalPrice = price
+      return price
+    },
+    placeOrder () {
+      const cartItemFrontVoList = {
+        userId: JSON.parse(localStorage.getItem('userInfo')).id,
+        consignee: this.addressForm.consignee,
+        telephone: this.addressForm.telephone,
+        position: this.addressForm.position,
+        payment: this.payment,
+        totalCount: this.totalCount,
+        totalPrice: this.totalPrice
+      }
+      service({
+        url: '/order/placeOrder',
+        method: 'PUT',
+        data: { cartItemFrontVoList }
+      }).then((res) => {
+        console.log(res)
+        this.$message('下单成功')
+      })
     }
   },
   computed: {
     isNone () {
-      let i = Object.values(this.addressForm).filter(
+      const i = Object.values(this.addressForm).filter(
         (item) => item === ''
       ).length
       return i !== 0
@@ -287,14 +336,15 @@ export default {
 }
 
 .checkbox_payment {
-  width: 233px;
-  height: 42px;
-  line-height: 42px;
-  background-color: rgba(23, 233, 233, 0.3);
-  border-radius: 1em;
-  padding-left: 10px;
-  margin-top: 10px;
-  margin-left: 10%;
+  width: 20px;
+  margin-left: 25%;
+}
+
+.div_center {
+  font-family: Calibri sans-serif;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
 }
 
 .checkout {
