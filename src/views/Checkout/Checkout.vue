@@ -18,7 +18,7 @@
                 dialog = 2;
                 methodWay = 1;
               "
-              >修改地址</a
+            >修改地址</a
             >
             <div class="none" v-else>您需要先添加收货地址才可提交订单。</div>
           </div>
@@ -117,7 +117,7 @@
                 ></el-image>
                 <div class="goods_name">
                   <span>{{ scope.row.prodName }}</span>
-                  <br />
+                  <br/>
                   <span>{{ scope.row.attr }}</span>
                 </div>
               </div>
@@ -181,156 +181,144 @@
   </div>
 </template>
 <script>
-import service from "@/api/index";
-import { BaseUrl } from "@/api/util";
+import service from '@/api/index'
+import { BaseUrl } from '@/api/util'
 
 export default {
-  created() {
+  created () {
     this.cartItemFrontVoList = JSON.parse(
-      localStorage.getItem("cartItemFrontVoList")
-    );
-    console.log(this.cartItemFrontVoList);
+      localStorage.getItem('cartItemFrontVoList')
+    )
+    this.cartItemSelectList = Array.from(this.cartItemFrontVoList, ({ cartItemId }) => cartItemId)
     service({
-      url: "/address/getByUser",
-      method: "GET",
+      url: '/address/getByUser',
+      method: 'GET',
       params: {
-        id: JSON.parse(localStorage.getItem("userInfo")).id,
-      },
+        id: JSON.parse(localStorage.getItem('userInfo')).id
+      }
     }).then((res) => {
-      this.addressTable = Array.from(res.data);
-      this.addressForm = this.addressTable[0]; // 把第一条地址赋给addressForm
-    });
+      this.addressTable = Array.from(res.data)
+      this.addressForm = this.addressTable[0] // 把第一条地址赋给addressForm
+    })
   },
-  data() {
+  data () {
     return {
       addressForm: {
-        consignee: "",
-        telephone: "",
-        position: "",
+        consignee: '',
+        telephone: '',
+        position: ''
       },
-      payment: "",
+      payment: '',
       dialog: 0,
       addressTable: [],
       dialogClick: -1,
       methodWay: 0,
       cartItemFrontVoList: [],
-      BaseUrl,
-    };
+      cartItemSelectList: [],
+      BaseUrl
+    }
   },
   methods: {
-    changePosition(index) {
-      this.addressForm.position = this.addressTable[index].position;
-      this.addressForm.consignee = this.addressTable[index].consignee;
-      this.addressForm.telephone = this.addressTable[index].telephone;
-      this.addressForm.id = this.addressTable[index].id;
-      this.dialog = 0;
+    changePosition (index) {
+      this.addressForm.position = this.addressTable[index].position
+      this.addressForm.consignee = this.addressTable[index].consignee
+      this.addressForm.telephone = this.addressTable[index].telephone
+      this.addressForm.id = this.addressTable[index].id
+      this.dialog = 0
     },
-    updateAddress() {
+    updateAddress () {
       if (this.methodWay === 1) {
         service({
-          url: "/address",
-          method: "PUT",
+          url: '/address',
+          method: 'PUT',
           data: {
-            ...this.addressForm,
-          },
+            ...this.addressForm
+          }
         }).then((res) => {
-          this.$message("收货人信息修改成功");
-          this.dialog = 0;
-          this.methodWay = 0;
+          this.$message('收货人信息修改成功')
+          this.dialog = 0
+          this.methodWay = 0
           const index = this.addressTable.findIndex(
             (item) => item.id === res.data.id
-          );
-          this.$set(this.addressTable, index, { ...this.addressForm });
-        });
+          )
+          this.$set(this.addressTable, index, { ...this.addressForm })
+        })
       } else if (this.methodWay === 2) {
-        this.addressForm.consignee = "";
-        this.addressForm.position = "";
-        this.addressForm.telephone = "";
+        this.addressForm.consignee = ''
+        this.addressForm.position = ''
+        this.addressForm.telephone = ''
         service({
-          url: "/address",
-          method: "POST",
+          url: '/address',
+          method: 'POST',
           data: {
             ...this.addressForm,
-            userId: JSON.parse(localStorage.getItem("userInfo")).id,
-          },
+            userId: JSON.parse(localStorage.getItem('userInfo')).id
+          }
         }).then((res) => {
-          console.log(res);
-          this.$message("收货人信息添加成功");
-          this.addressTable.push({ ...this.addressForm });
-          this.dialog = 0;
-          this.methodWay = 0;
-        });
+          console.log(res)
+          this.$message('收货人信息添加成功')
+          this.addressTable.push({ ...this.addressForm })
+          this.dialog = 0
+          this.methodWay = 0
+        })
       }
     },
-    subTotal(count, price) {
-      return count * price;
+    subTotal (count, price) {
+      return count * price
     },
-    totalCount() {
+    totalCount () {
       return this.cartItemFrontVoList.reduce(
         (sum, item) => sum + item.count,
         0
-      );
+      )
     },
-    totalPrice() {
+    totalPrice () {
       return this.cartItemFrontVoList.reduce(
         (sum, item) => sum + item.price * item.count,
         0
-      );
+      )
     },
-    placeOrder() {
-      const cartItemGoodList = [];
-      console.log(this.cartItemFrontVoList);
-      this.cartItemFrontVoList.forEach(item => {
-        let {attr,cartItemId,count,imagePosition,price,prodectId,cartId,createTime,updateTime,isDeleted} = item
-        cartItemGoodList.push({
-          attributeValue: attr,
-          imagePosition,
-          singlePrice:price,
-          totalPrice: price * count,
-          prodectId,
-          cartId,
-          id:cartItemId,
-          createTime,
-          updateTime,
-          isDeleted,
-          count
+    placeOrder () {
+      if (this.payment === '') {
+        this.$alert('请选择支付方式')
+      } else {
+        console.log(this.cartItemSelectList)
+        service.defaults.headers['Content-Type'] = 'text/plain'
+        service({
+          url: '/order/placeOrder',
+          method: 'PUT',
+          data: JSON.stringify(this.cartItemSelectList),
+          params: {
+            user_id: JSON.parse(localStorage.getItem('userInfo')).id,
+            consignee: this.addressForm.consignee,
+            telephone: this.addressForm.telephone,
+            position: this.addressForm.position,
+            payment: this.payment,
+            total_count: this.totalCount(),
+            total_price: this.totalPrice()
+          }
+        }).then((res) => {
+          console.log(res)
+          this.$message('下单成功')
         })
-      })
-      const postList = {
-        user_id: JSON.parse(localStorage.getItem("userInfo")).id,
-        consignee: this.addressForm.consignee,
-        telephone: this.addressForm.telephone,
-        position: this.addressForm.position,
-        payment: this.payment,
-        total_count: this.totalCount(),
-        total_price: this.totalPrice(),     
-      };
-      service({
-        url: "/order/placeOrder",
-        method: "PUT",
-        data: cartItemGoodList ,
-        params: postList 
-      }).then((res) => {
-        console.log(res);
-        this.$message("下单成功");
-      });
-    },
+      }
+    }
   },
   computed: {
-    isNone() {
+    isNone () {
       const i = Object.values(this.addressForm).filter(
-        (item) => item === ""
-      ).length;
-      return i !== 0;
+        (item) => item === ''
+      ).length
+      return i !== 0
     },
   },
-};
+}
 </script>
 <style lang="less" scoped>
 .goods_name {
   font-size: 16px;
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
-    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   line-height: 160%;
   margin: 7% 7% 0 7%;
 }
@@ -573,6 +561,7 @@ export default {
           text-align: right;
           padding-right: 70px;
         }
+
         .totalPrice {
           font-size: 20px;
           color: #cf4444;

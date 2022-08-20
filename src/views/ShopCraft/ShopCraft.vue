@@ -11,7 +11,7 @@
       <el-table :data="cartItemFrontVoList">
         <el-table-column label="选择" width="100">
           <template slot-scope="scope">
-            <input type="checkbox" v-model="scope.row.state" />
+            <input type="checkbox" v-model="scope.row.state"/>
           </template>
         </el-table-column>
         <el-table-column label="商品信息" width="400">
@@ -63,13 +63,13 @@
       <div class="action">
         <div class="batch">
           <el-checkbox v-model="isAll" fill="#27ba9b" text-color="#27ba9b"
-            ><span>全选</span></el-checkbox
+          ><span>全选</span></el-checkbox
           >&nbsp;
         </div>
         <div class="settle_count">
           共<span>{{ allCount() }}</span
-          >件商品，已经选择<span>{{ selectedCount() }}</span
-          >件，商品合计：<span class="red">￥{{ sumTotal() }}</span>
+        >件商品，已经选择<span>{{ selectedCount() }}</span
+        >件，商品合计：<span class="red">￥{{ sumTotal() }}</span>
           <button class="green_button" @click="checkList()">下单结算</button>
         </div>
       </div>
@@ -78,115 +78,119 @@
   </el-container>
 </template>
 <script>
-import service from "@/api";
-import Recommend from "./Recommend/Recommend.vue";
-import { BaseUrl } from "@/api/util";
+import service from '@/api'
+import Recommend from './Recommend/Recommend.vue'
+import { BaseUrl } from '@/api/util'
 
 export default {
-  created() {
-    this.updateCart();
+  created () {
+    this.updateCart()
   },
-  data() {
+  data () {
     return {
       list: [
         {
-          goods_name: "24寸搜神记铝框拉杆箱",
+          goods_name: '24寸搜神记铝框拉杆箱',
           price: 384,
           count: 1,
           imgSrc:
-            "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
+            'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
           state: true,
-          attr: "粉色 纪念款 2019",
+          attr: '粉色 纪念款 2019',
         },
         {
-          goods_name: "24寸搜神记铝框拉杆箱",
+          goods_name: '24寸搜神记铝框拉杆箱',
           price: 384,
           count: 1,
           imgSrc:
-            "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
+            'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
           state: true,
-          attr: "粉色 纪念款 2019",
+          attr: '粉色 纪念款 2019',
         },
       ],
       recList: [
         [
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
+          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
+          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
+          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
+          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
         ],
         [
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
-          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
+          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
+          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
+          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
+          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
         ],
       ],
       cartItemFrontVoList: [],
       BaseUrl,
-    };
+    }
   },
   computed: {
     isAll: {
-      set(val) {
-        this.cartItemFrontVoList.forEach((obj) => (obj.state = val));
+      set (val) {
+        this.cartItemFrontVoList.forEach((obj) => (obj.state = val))
       },
-      get() {
-        return this.cartItemFrontVoList.every((obj) => obj.state === true);
+      get () {
+        return this.cartItemFrontVoList.every((obj) => obj.state === true)
       },
     },
   },
   methods: {
-    subTotal(price, count) {
-      return Number.parseFloat(price * count).toFixed(2);
+    subTotal (price, count) {
+      return Number.parseFloat(price * count).toFixed(2)
     },
-    allCount() {
-      return this.cartItemFrontVoList.reduce((sum, obj) => sum + obj.count, 0);
+    allCount () {
+      return this.cartItemFrontVoList.reduce((sum, obj) => sum + obj.count, 0)
     },
-    selectedCount() {
+    selectedCount () {
       return this.cartItemFrontVoList.reduce(
         (sum, obj) => (obj.state ? sum + obj.count : sum),
         0
-      );
+      )
     },
-    sumTotal() {
+    sumTotal () {
       return this.cartItemFrontVoList.reduce(
         (sum, obj) => (obj.state ? sum + obj.count * obj.price : sum),
         0
-      );
+      )
     },
-    delGood(index) {
-      this.cartItemFrontVoList.splice(index, 1);
-      let { cartItemId: id } = this.cartItemFrontVoList[index];
+    delGood (index) {
+      this.cartItemFrontVoList.splice(index, 1)
+      let { cartItemId: id } = this.cartItemFrontVoList[index]
       service({
-        url: "/cartItem",
-        method: "DELETE",
+        url: '/cartItem',
+        method: 'DELETE',
         params: {
           id,
         },
-      });
+      })
     },
-    changeNum(index) {
-      const { cartItemId, count, price } = this.cartItemFrontVoList[index];
-      console.log(cartItemId, count);
+    changeNum (index) {
+      const {
+        cartItemId,
+        count,
+        price
+      } = this.cartItemFrontVoList[index]
+      console.log(cartItemId, count)
       service({
-        url: "/cartItem",
-        method: "PUT",
+        url: '/cartItem',
+        method: 'PUT',
         data: {
           id: cartItemId,
           count,
           totalPrice: price * count,
         },
-      });
+      })
     },
-    updateCart() {
+    updateCart () {
       service({
-        url: "/cart/getAll",
-        method: "GET",
-        params: { id: JSON.parse(localStorage.getItem("userInfo")).id },
+        url: '/cart/getAll',
+        method: 'GET',
+        params: { id: JSON.parse(localStorage.getItem('userInfo')).id },
       }).then((res) => {
-        console.log(res.data);
-        this.cartItemFrontVoList = [];
+        console.log(res.data)
+        this.cartItemFrontVoList = []
         for (let i = 0; i < res.data.cartItemFrontVoList.length; i++) {
           this.cartItemFrontVoList.push({
             cartId: res.data.cartItemFrontVoList[i].cartId,
@@ -197,29 +201,29 @@ export default {
             cartItemId: res.data.cartItemFrontVoList[i].id,
             price: res.data.cartItemFrontVoList[i].singlePrice,
             productId: res.data.cartItemFrontVoList[i].productId,
-            createTime:res.data.cartItemFrontVoList[i].createTime,
-            updateTime:res.data.cartItemFrontVoList[i].updateTime,
+            createTime: res.data.cartItemFrontVoList[i].createTime,
+            updateTime: res.data.cartItemFrontVoList[i].updateTime,
             isDeleted: res.data.cartItemFrontVoList[i].isDeleted,
             state: true
-          });
+          })
         }
-      });
+      })
     },
-    checkList() {
+    checkList () {
       console.log(
-        "这里是购物车",
+        '这里是购物车',
         this.cartItemFrontVoList.filter((item) => item.state == true)
-      );
-      localStorage.setItem('cartItemFrontVoList',JSON.stringify(this.cartItemFrontVoList.filter((item) => item.state == true)))
+      )
+      localStorage.setItem('cartItemFrontVoList', JSON.stringify(this.cartItemFrontVoList.filter((item) => item.state == true)))
       this.$router.push({
-        path: "/checkout",
-      });
-    },
+        path: '/checkout'
+      })
+    }
   },
   components: {
-    Recommend,
-  },
-};
+    Recommend
+  }
+}
 </script>
 <style lang="less" scoped>
 .goods_name {

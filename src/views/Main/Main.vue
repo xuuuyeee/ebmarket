@@ -13,7 +13,7 @@
         <template #span>{{ topic.description }}</template>
       </main-title>
       <fresh-popular :goodsData="topicGoodList[index]">
-        <template #price="{ data }"> <small>￥</small>{{ data }} </template>
+        <template #price="{ data }"><small>￥</small>{{ data }}</template>
       </fresh-popular>
     </div>
     <!-- 生鲜 -->
@@ -29,34 +29,34 @@
 </template>
 
 <script>
-import Banner from "@/views/Main/Components/Banner";
-import MainTitle from "@/views/Main/Components/MainTitle";
-import FreshPopular from "@/views/Main/Components/FreshPopular";
-import MainFloor from "@/views/Main/Components/MainFloor";
-import TopicDiv from "@/views/Main/Components/TopicDiv";
-import service from "@/api/index";
+import Banner from '@/views/Main/Components/Banner'
+import MainTitle from '@/views/Main/Components/MainTitle'
+import FreshPopular from '@/views/Main/Components/FreshPopular'
+import MainFloor from '@/views/Main/Components/MainFloor'
+import TopicDiv from '@/views/Main/Components/TopicDiv'
+import service from '@/api/index'
+
 export default {
-  name: "MyMain",
-  created() {
+  name: 'MyMain',
+  created () {
     service({
-      url: "/topic/getAll",
-      method: "GET",
+      url: '/topic/getAll',
+      method: 'GET',
     }).then((res) => {
-      this.topicList = Array.from(res.data);
-      // let idfilter = this.topicList.map( item => item.id);
-      const data = [1, 2, 3];
+      this.topicList = Array.from(res.data)
+      const data = [1, 2, 3]
       service({
-        url: "/product/getByTopicList",
-        method: "POST",
-        data: JSON.stringify(data),
+        url: '/product/getByTopicList',
+        method: 'POST',
+        data: JSON.stringify(data)
       }).then((res) => {
-        console.log(res.data);
+        console.log(res.data)
         for (let i = 0; i < res.data.length; i++) {
-          this.topicGoodList.push(res.data[i].productVoList);
+          this.topicGoodList.push(res.data[i].productVoList)
         }
-        console.log(this.topicGoodList);
-      });
-    });
+        console.log(this.topicGoodList)
+      })
+    })
   },
   components: {
     Banner,
@@ -65,27 +65,29 @@ export default {
     MainFloor,
     TopicDiv,
   },
-  data() {
+  data () {
     return {
       coverPic: [
-        { imgSrc: require("@/assets/uploads/clothes_goods_cover.jpg") },
-        { imgSrc: require("@/assets/uploads/kitchen_goods_cover.jpg") },
-        { imgSrc: require("@/assets/uploads/home_goods_cover.jpg") },
+        { imgSrc: require('@/assets/uploads/clothes_goods_cover.jpg') },
+        { imgSrc: require('@/assets/uploads/kitchen_goods_cover.jpg') },
+        { imgSrc: require('@/assets/uploads/home_goods_cover.jpg') },
       ],
       topicList: [],
       topicGoodList: [],
-    };
+    }
   },
-};
+}
 </script>
 
 <style lang="less" scoped>
 .popular {
   padding-bottom: 42px;
 }
+
 .brand {
   padding-bottom: 32px;
 }
+
 .discuss {
   margin-bottom: 80px;
 }
