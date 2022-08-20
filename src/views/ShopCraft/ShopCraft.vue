@@ -85,7 +85,7 @@ import { BaseUrl } from '@/api/util'
 
 export default {
   created () {
-    this.updateCart()
+    this.updateCart();
   },
   data () {
     return {
@@ -207,7 +207,8 @@ export default {
     checkList () {
       // let tmpList = this.cartItemFrontVoList.filter(item => item.state == true).map(item => item.cartItemId);
       // console.log(tmpList);
-      eventBus.$emit('checkout', this.cartItemFrontVoList)
+      eventBus.$emit('checkout', this.cartItemFrontVoList.filter(item => item.state == true))
+      console.log('这里是购物车',this.cartItemFrontVoList.filter(item => item.state == true));
       this.$router.push('/checkout')
     }
 

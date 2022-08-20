@@ -107,11 +107,6 @@
       <h3 class="box-title">商品信息</h3>
       <div class="box-body">
         <el-table :data="cartItemFrontVoList">
-          <el-table-column label="选择" width="100" align="center">
-            <template slot-scope="scope">
-              <input type="checkbox" :id="scope.row.id" :value="scope.row.id" v-model="cartItemSelectList"/>
-            </template>
-          </el-table-column>
           <el-table-column label="商品信息" width="400" align="center">
             <template slot-scope="scope">
               <div style="display: flex; justify-content:center">
@@ -166,9 +161,17 @@
       <h3 class="box-title">金额明细</h3>
       <div class="box-body div_center">
         <div class="total">
-          <label>商品件数：{{ TotalCount() }}件</label>
+          <!-- <label>商品件数：{{ TotalCount() }}件</label>
           <br>
-          <label>商品总价：￥{{ TotalPrice() }}</label>
+          <label>商品总价：￥{{ TotalPrice() }}</label> -->
+          <dl>
+            <dt>商品件数：</dt>
+            <dd>{{TotalCount()}}件</dd>
+          </dl>
+          <dl>
+            <dt>商品总价：</dt>
+            <dd class="totalPrice">￥{{ TotalPrice() }}</dd>
+          </dl>
         </div>
       </div>
       <div class="submit">
@@ -184,11 +187,6 @@ import { BaseUrl } from '@/api/util'
 
 export default {
   created () {
-    eventBus.$on('checkout', (list) => {
-      this.cartItemFrontVoList = []
-      this.cartItemFrontVoList = list
-      console.log(this.cartItemFrontVoList)
-    })
     service({
       url: '/address/getByUser',
       method: 'GET',
@@ -199,16 +197,16 @@ export default {
       this.addressTable = Array.from(res.data)
       this.addressForm = this.addressTable[0] // 把第一条地址赋给addressForm
     })
-    service({
-      url: '/cart/getAll',
-      method: 'GET',
-      params: {
-        id: JSON.parse(localStorage.getItem('userInfo')).id
-      }
-    }).then((res) => {
-      this.cartItemFrontVoList = Array.from(res.data.cartItemFrontVoList)
-      this.cartItemSelectList = Array.from(this.cartItemFrontVoList, ({ id }) => id)
-    })
+    // service({
+    //   url: '/cart/getAll',
+    //   method: 'GET',
+    //   params: {
+    //     id: JSON.parse(localStorage.getItem('userInfo')).id
+    //   }
+    // }).then((res) => {
+    //   this.cartItemFrontVoList = Array.from(res.data.cartItemFrontVoList)
+    //   this.cartItemSelectList = Array.from(this.cartItemFrontVoList, ({ id }) => id)
+    // })
   },
   data () {
     return {
@@ -315,6 +313,12 @@ export default {
         console.log(res)
         this.$message('下单成功')
       })
+    },
+    acceptData(){
+      eventBus.$on('checkout', (list) => {
+      this.cartItemFrontVoList = list
+      console.log('这里是订单结算',this.cartItemFrontVoList);
+     })
     }
   },
   computed: {
@@ -324,6 +328,9 @@ export default {
       ).length
       return i !== 0
     }
+  },
+  mounted(){
+    this.acceptData();
   }
 }
 </script>
@@ -343,8 +350,6 @@ export default {
 .div_center {
   font-family: Calibri sans-serif;
   font-size: 20px;
-  display: flex;
-  justify-content: center;
 }
 
 .checkout {
@@ -575,6 +580,10 @@ export default {
           text-align: right;
           padding-right: 70px;
         }
+        .totalPrice{
+            font-size: 20px;
+            color: #cf4444;
+          }
       }
     }
   }
