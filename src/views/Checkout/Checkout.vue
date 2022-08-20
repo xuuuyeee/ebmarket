@@ -283,7 +283,7 @@ export default {
         this.$alert('请选择支付方式')
       } else {
         console.log(this.cartItemSelectList)
-        service.defaults.headers['Content-Type'] = 'text/plain'
+        service.defaults.headers['Content-Type'] = 'application/json'
         service({
           url: '/order/placeOrder',
           method: 'PUT',
@@ -310,8 +310,8 @@ export default {
         (item) => item === ''
       ).length
       return i !== 0
-    },
-  },
+    }
+  }
 }
 </script>
 <style lang="less" scoped>
