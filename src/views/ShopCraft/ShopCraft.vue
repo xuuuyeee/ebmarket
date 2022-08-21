@@ -62,7 +62,9 @@
     >
       <div class="action">
         <div class="batch">
-          <el-checkbox v-model="isAll" fill="#27ba9b" text-color="#27ba9b"
+          <el-checkbox v-model="isAll"
+fill="#27ba9b"
+text-color="#27ba9b"
           ><span>全选</span></el-checkbox
           >&nbsp;
         </div>
@@ -83,10 +85,10 @@ import Recommend from './Recommend/Recommend.vue'
 import { BaseUrl } from '@/api/util'
 
 export default {
-  created () {
+  created() {
     this.updateCart()
   },
-  data () {
+  data() {
     return {
       list: [
         {
@@ -96,7 +98,7 @@ export default {
           imgSrc:
             'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
           state: true,
-          attr: '粉色 纪念款 2019',
+          attr: '粉色 纪念款 2019'
         },
         {
           goods_name: '24寸搜神记铝框拉杆箱',
@@ -105,68 +107,68 @@ export default {
           imgSrc:
             'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
           state: true,
-          attr: '粉色 纪念款 2019',
-        },
+          attr: '粉色 纪念款 2019'
+        }
       ],
       recList: [
         [
           'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
           'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
           'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
-          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
+          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png'
         ],
         [
           'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
           'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
           'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
-          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
-        ],
+          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png'
+        ]
       ],
       cartItemFrontVoList: [],
-      BaseUrl,
+      BaseUrl
     }
   },
   computed: {
     isAll: {
-      set (val) {
+      set(val) {
         this.cartItemFrontVoList.forEach((obj) => (obj.state = val))
       },
-      get () {
+      get() {
         return this.cartItemFrontVoList.every((obj) => obj.state === true)
-      },
-    },
+      }
+    }
   },
   methods: {
-    subTotal (price, count) {
+    subTotal(price, count) {
       return Number.parseFloat(price * count).toFixed(2)
     },
-    allCount () {
+    allCount() {
       return this.cartItemFrontVoList.reduce((sum, obj) => sum + obj.count, 0)
     },
-    selectedCount () {
+    selectedCount() {
       return this.cartItemFrontVoList.reduce(
         (sum, obj) => (obj.state ? sum + obj.count : sum),
         0
       )
     },
-    sumTotal () {
+    sumTotal() {
       return this.cartItemFrontVoList.reduce(
         (sum, obj) => (obj.state ? sum + obj.count * obj.price : sum),
         0
       )
     },
-    delGood (index) {
+    delGood(index) {
       this.cartItemFrontVoList.splice(index, 1)
-      let { cartItemId: id } = this.cartItemFrontVoList[index]
+      const { cartItemId: id } = this.cartItemFrontVoList[index]
       service({
         url: '/cartItem',
         method: 'DELETE',
         params: {
-          id,
-        },
+          id
+        }
       })
     },
-    changeNum (index) {
+    changeNum(index) {
       const {
         cartItemId,
         count,
@@ -179,15 +181,15 @@ export default {
         data: {
           id: cartItemId,
           count,
-          totalPrice: price * count,
-        },
+          totalPrice: price * count
+        }
       })
     },
-    updateCart () {
+    updateCart() {
       service({
         url: '/cart/getAll',
         method: 'GET',
-        params: { id: JSON.parse(localStorage.getItem('userInfo')).id },
+        params: { id: JSON.parse(localStorage.getItem('userInfo')).id }
       }).then((res) => {
         console.log(res.data)
         this.cartItemFrontVoList = []
@@ -209,7 +211,7 @@ export default {
         }
       })
     },
-    checkList () {
+    checkList() {
       console.log(
         '这里是购物车',
         this.cartItemFrontVoList.filter((item) => item.state == true)

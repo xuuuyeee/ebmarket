@@ -65,20 +65,20 @@ import service from '@/api'
 import { BaseUrl } from '@/api/util'
 
 export default {
-  created () {
-    this.sort = this.$route.params['sort']
+  created() {
+    this.sort = this.$route.params.sort
     eventBus.$on('send', (arr) => {
       this.category_second = arr
       this.getData(this.sort)
     })
   },
-  data () {
+  data() {
     return {
       Carousel_list: [
         'http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/dfc11bb0-4af5-4e9b-9458-99f615cc685a.jpg',
         'http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/dfc11bb0-4af5-4e9b-9458-99f615cc685a.jpg',
         'http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/dfc11bb0-4af5-4e9b-9458-99f615cc685a.jpg',
-        'http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/dfc11bb0-4af5-4e9b-9458-99f615cc685a.jpg',
+        'http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/dfc11bb0-4af5-4e9b-9458-99f615cc685a.jpg'
       ],
       category_second: [],
       category_second_content: [],
@@ -87,19 +87,19 @@ export default {
     }
   },
   watch: {
-    $route (to, from) {
-      this.sort = this.$route.params['sort']
+    $route(to, from) {
+      this.sort = this.$route.params.sort
       this.getData(this.sort)
-    },
+    }
   },
   methods: {
-    getData (sort) {
+    getData(sort) {
       service({
         url: '/product/getByCategoryClassify',
         method: 'GET',
         params: {
           id: sort
-        },
+        }
       }).then((res) => {
         this.category_second_content = []
         for (let i = 0; i < res.data.length; i++) {
@@ -111,15 +111,14 @@ export default {
               good_description:
                 res.data[i].productVoList[j].description.split(';')[0],
               good_img: res.data[i].productVoList[j].mainImagePosition[0],
-              good_price: res.data[i].productVoList[j].price,
+              good_price: res.data[i].productVoList[j].price
             })
           }
         }
       })
-
-    },
+    }
   },
-  mounted () {
+  mounted() {
     this.getData(this.sort)
   }
 }

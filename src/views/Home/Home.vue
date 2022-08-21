@@ -22,8 +22,8 @@ export default {
     CommonHeader,
     CommonFooter
   },
-  data(){
-    return{
+  data() {
+    return {
     }
   }
 }

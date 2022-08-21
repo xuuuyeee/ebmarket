@@ -161,11 +161,11 @@ import GoodComment from './GoodComment.vue'
 import GoodDetail from './GoodDetail.vue'
 
 export default {
-  created () {
-    this.sort = this.$route.params['sort']
+  created() {
+    this.sort = this.$route.params.sort
     this.getData(this.sort)
   },
-  data () {
+  data() {
     return {
       goodInfo: {
         good_id: -1,
@@ -191,25 +191,25 @@ export default {
     }
   },
   watch: {
-    $route (to, from) {
+    $route(to, from) {
       this.sort = this.$route.params.sort
       this.getData(this.sort)
     }
   },
   methods: {
-    checkPic (event) {
+    checkPic(event) {
       if (event.target.tagName === 'IMG') {
         this.selectedImageNum =
           event.target.parentNode.parentNode.getAttribute('data-index')
       }
     },
-    calPos (event) {
+    calPos(event) {
       const middlePos = event.target.parentNode.getBoundingClientRect()
-      let x = event.pageX - middlePos.left
-      let y = event.pageY - middlePos.top - document.documentElement.scrollTop
+      const x = event.pageX - middlePos.left
+      const y = event.pageY - middlePos.top - document.documentElement.scrollTop
       if (x >= 0 && x <= 400 && y >= 0 && y <= 400) {
-        let mx = 0,
-          my = 0
+        let mx = 0
+        let my = 0
         if (x < 100) mx = 0
         if (x >= 100 && x <= 300) mx = x - 100
         if (x > 300) mx = 200
@@ -220,7 +220,7 @@ export default {
         this.layerY = my
       }
     },
-    addCart (id, num, selectList, price) {
+    addCart(id, num, selectList, price) {
       if (localStorage.getItem('userInfo') !== '') {
         if (Object.values(selectList).some((item) => item.length === 0)) {
           this.$message('请选择商品的规格后再加入购物车')
@@ -230,11 +230,11 @@ export default {
           url: '/cart/getAll',
           method: 'GET',
           params: {
-            id: JSON.parse(localStorage.getItem('userInfo')).id,
-          },
+            id: JSON.parse(localStorage.getItem('userInfo')).id
+          }
         }).then((res) => {
-          let { cartItemFrontVoList } = res.data
-          let arrStr = Object.keys(selectList)
+          const { cartItemFrontVoList } = res.data
+          const arrStr = Object.keys(selectList)
             .map((item, index) => {
               return item.concat(':', Object.values(selectList)[index])
             })
@@ -244,7 +244,7 @@ export default {
               (item) => item.productId != id || item.attributeValue != arrStr
             )
           ) {
-            let tmp = cartItemFrontVoList.find(
+            const tmp = cartItemFrontVoList.find(
               (item) => item.productId == id && item.attributeValue == arrStr
             )
             num = num + tmp.count
@@ -258,8 +258,8 @@ export default {
                 productId: id,
                 singlePrice: price,
                 totalPrice: price * num,
-                id: tmp.id,
-              },
+                id: tmp.id
+              }
             }).then((res) => {
               this.$message('商品添加购物车完成')
             })
@@ -273,8 +273,8 @@ export default {
                 count: num,
                 productId: id,
                 singlePrice: price,
-                totalPrice: price * num,
-              },
+                totalPrice: price * num
+              }
             }).then((res) => {
               this.$message('商品添加购物车完成')
             })
@@ -282,18 +282,17 @@ export default {
         })
       } else {
         this.$message('登录后才能购物哦')
-        return
       }
     },
-    getData (sort) {
+    getData(sort) {
       service({
         url: '/product/getOne',
         method: 'GET',
         params: {
-          id: sort,
-        },
+          id: sort
+        }
       }).then((res) => {
-        let {
+        const {
           prodName,
           description,
           attributeList,
@@ -301,7 +300,7 @@ export default {
           id,
           mainImagePosition,
           categoryId,
-          detailImagePosition,
+          detailImagePosition
         } = res.data
         this.goodInfo.good_id = id
         this.goodInfo.good_title = prodName
@@ -316,8 +315,8 @@ export default {
           url: '/product/getBySame',
           method: 'GET',
           params: {
-            id: categoryId,
-          },
+            id: categoryId
+          }
         }).then((res) => {
           this.recList = []
           for (let i = 0, j = 0; i < res.data.length; i++) {
@@ -327,15 +326,15 @@ export default {
             }
             this.recList[j].push({
               id: res.data[i].id,
-              imgSrc: res.data[i].mainImagePosition[0],
+              imgSrc: res.data[i].mainImagePosition[0]
             })
           }
           service({
             url: '/comment/getByProduct',
             method: 'GET',
             params: {
-              id: this.goodInfo.good_id,
-            },
+              id: this.goodInfo.good_id
+            }
           }).then((res) => {
             console.log(res.data)
             this.goodInfo.commentList = []
@@ -351,52 +350,52 @@ export default {
           })
         })
       })
-      let cutString = (str) => {
-        let arr = Array.from(str.split(';').slice(1))
+      const cutString = (str) => {
+        const arr = Array.from(str.split(';').slice(1))
         if (arr[0] == '') {
           return []
         } else {
-          let ans = []
+          const ans = []
           arr.forEach((item) => {
-            let str = Array.from(item.split(':'))
+            const str = Array.from(item.split(':'))
             ans.push({
               name: str[0],
-              content: str[1],
+              content: str[1]
             })
           })
           return ans
         }
       }
-      let cutAttr = (str) => {
-        let arr = Array.from(str.split(';'))
-        let ans = []
+      const cutAttr = (str) => {
+        const arr = Array.from(str.split(';'))
+        const ans = []
         arr.forEach((item) => {
-          let tmparr = []
-          let attrName = item.split(':')[0] ? item.split(':')[0] : ''
-          let contentarr = Array.from(item.split(':')[1].split(','))
+          const tmparr = []
+          const attrName = item.split(':')[0] ? item.split(':')[0] : ''
+          const contentarr = Array.from(item.split(':')[1].split(','))
           contentarr.forEach((item, index) =>
             tmparr.push({
               label: `${attrName + (index + 1)}`,
-              value: item,
+              value: item
             })
           )
           ans.push({
             label: attrName,
-            attrList: tmparr,
+            attrList: tmparr
           })
           this.$set(this.select_good_attr, attrName, '')
         })
         return ans
       }
-    },
+    }
   },
   components: {
     Recommend,
     GoodDetail,
-    GoodComment,
+    GoodComment
   },
   computed: {
-    commentCount () {
+    commentCount() {
       return this.goodInfo.commentList.length
     }
   }

@@ -18,12 +18,12 @@
 </template>
 <script>
 export default {
-  data(){
-    return{
+  data() {
+    return {
       isActive: 1
     }
   }
-};
+}
 </script>
 <style lang="less" scoped>
   ul{

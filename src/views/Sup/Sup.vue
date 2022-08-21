@@ -40,100 +40,100 @@
   </div>
 </template>
 <script>
-import service from "@/api";
-import Good from "./Component/Good.vue";
+import service from '@/api'
+import Good from './Component/Good.vue'
 export default {
   components: {
-    Good,
+    Good
   },
   data() {
     return {
       list: [
         {
           imgSrc:
-            "https://yanxuan-item.nosdn.127.net/b9d46625f648ae26aa84194e4810ab15.jpg",
-          good_name: "干湿两用懒人抹布1卷50节",
-          good_desc: "木浆吸水吸油，热销200万卷",
+            'https://yanxuan-item.nosdn.127.net/b9d46625f648ae26aa84194e4810ab15.jpg',
+          good_name: '干湿两用懒人抹布1卷50节',
+          good_desc: '木浆吸水吸油，热销200万卷',
           good_price: (13.9).toFixed(2),
-          good_id: "7767890",
-        },
+          good_id: '7767890'
+        }
       ],
-      way: "",
+      way: '',
       sort: -1,
       isActive: 0
-    };
+    }
   },
   watch: {
     $route(to, from) {
-      this.sort = this.$route.params["sort"];
-      this.way = this.$route.params["way"];
-      this.getData(this.way, this.sort);
-    },
+      this.sort = this.$route.params.sort
+      this.way = this.$route.params.way
+      this.getData(this.way, this.sort)
+    }
   },
   created() {
-    this.sort = this.$route.params["sort"];
-    this.way = this.$route.params["way"];
-    this.list = [];
-    this.getData(this.way, this.sort);
+    this.sort = this.$route.params.sort
+    this.way = this.$route.params.way
+    this.list = []
+    this.getData(this.way, this.sort)
   },
   methods: {
     getData(way, sort) {
-      if (way == "cat") {
+      if (way == 'cat') {
         service({
-          url: "/product/getByCategory",
-          method: "GET",
-          params: { id: sort },
+          url: '/product/getByCategory',
+          method: 'GET',
+          params: { id: sort }
         }).then((res) => {
-          this.list = [];
-          console.log(res.data);
+          this.list = []
+          console.log(res.data)
           for (let i = 0; i < res.data.length; i++) {
             this.list.push({
               id: res.data[i].id,
               prodName: res.data[i].prodName,
               price: res.data[i].price,
-              desc: res.data[i].description.split(";")[0],
+              desc: res.data[i].description.split(';')[0],
               imgSrc: res.data[i].mainImagePosition[0],
               createTime: res.data[i].createTime
-            });
+            })
           }
-        });
-      } else if (way == "top") {
-        console.log("hello");
+        })
+      } else if (way == 'top') {
+        console.log('hello')
         service({
-          url: "product/getByTopic",
-          method: "GET",
+          url: 'product/getByTopic',
+          method: 'GET',
           params: {
-            id: sort,
-          },
+            id: sort
+          }
         }).then((res) => {
-          this.list = [];
+          this.list = []
           for (let i = 0; i < res.data.length; i++) {
             this.list.push({
               id: res.data[i].id,
               prodName: res.data[i].prodName,
               price: res.data[i].price,
-              desc: res.data[i].description.split(";")[0],
+              desc: res.data[i].description.split(';')[0],
               imgSrc: res.data[i].mainImagePosition[0],
               createTime: res.data[i].createTime
-            });
+            })
           }
-        });
+        })
       }
     },
-    sortByid(){
-      this.isActive = 1;
-      this.list.sort((a,b) => a.id - b.id);
+    sortByid() {
+      this.isActive = 1
+      this.list.sort((a, b) => a.id - b.id)
     },
-    sortByCreateTime(){
-      this.isActive = 2;
-      this.list.sort((a,b) => Date.parse(a.createTime) - Date.parse(b.createTime))
+    sortByCreateTime() {
+      this.isActive = 2
+      this.list.sort((a, b) => Date.parse(a.createTime) - Date.parse(b.createTime))
     },
-    sortByPrice(){
-      this.isActive = 3;
-      this.list.sort((a,b) => b.price - a.price)
+    sortByPrice() {
+      this.isActive = 3
+      this.list.sort((a, b) => b.price - a.price)
     }
-  },
-};
+  }
+}
 </script>
 <style scoped lang="less">
 .search {

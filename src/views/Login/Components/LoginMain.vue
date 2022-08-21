@@ -3,7 +3,7 @@
     <div class="wrapper">
       <div class="box">
         <div class="tab-nav">
-          <a href="javascript:;" class="active">账户登录</a>
+          <a href="javascript:" class="active">账户登录</a>
         </div>
         <div class="login-form">
           <br/>
@@ -24,12 +24,14 @@
               <input type="checkbox" v-model="isAgree"/>
             </label>
             <span>我已同意</span>
-            <a href="javascript:;">《隐私条款》</a>
+            <a href="javascript:">《隐私条款》</a>
             <span>和</span>
-            <a href="javascript:;">《服务条款》</a>
+            <a href="javascript:">《服务条款》</a>
           </div>
           <div class="button">
-            <a href="javascript:;" class="btn" @click.prevent="judgeLogin()"
+            <a href="javascript:"
+class="btn"
+@click.prevent="judgeLogin()"
             >登录</a
             >
             <div class="other">
@@ -43,29 +45,28 @@
 </template>
 <script>
 import service from '@/api/index'
-import axios from 'axios'
 
 export default {
   name: 'LoginMain',
-  data () {
+  data() {
     return {
       isAgree: false,
       username: '',
-      password: '',
+      password: ''
     }
   },
   methods: {
-    judgeLogin () {
+    judgeLogin() {
       const judRule = /^[a-zA-Z0-9-_]{6,16}$/
       if (this.isAgree === false) {
         this.$alert('尚未同意隐私条款与服务条款', '提示', {
-          confirmButtonText: '确定',
+          confirmButtonText: '确定'
         })
         return
       }
       if (!(judRule.test(this.username) && judRule.test(this.password))) {
         this.$alert('用户名与密码不符', '提示', {
-          confirmButtonText: '确定',
+          confirmButtonText: '确定'
         })
         this.username = ''
         this.password = ''
@@ -76,11 +77,11 @@ export default {
         method: 'POST',
         params: {
           userName: this.username,
-          password: this.password,
-        },
+          password: this.password
+        }
       })
         .then((res) => {
-          if (res.code == 1) {
+          if (res.code === 1) {
             const userInfo = res.data
             localStorage.setItem('userInfo', JSON.stringify(userInfo))
             service({
@@ -95,7 +96,7 @@ export default {
             this.$router.replace('/home')
           } else {
             this.$alert('用户名与密码输入错误', '提示', {
-              confirmButtonText: '确定',
+              confirmButtonText: '确定'
             })
           }
         })
@@ -103,8 +104,8 @@ export default {
           this.username = ''
           this.password = ''
         })
-    },
-  },
+    }
+  }
 }
 </script>
 

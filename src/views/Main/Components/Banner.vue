@@ -48,7 +48,7 @@
 <script>
 export default {
   name: 'MyBanner',
-  data () {
+  data() {
     return {
       item: [
         'http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/6d202d8e-bb47-4f92-9523-f32ab65754f4.jpg',

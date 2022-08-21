@@ -186,7 +186,7 @@ import service from '@/api/index'
 import { BaseUrl } from '@/api/util'
 
 export default {
-  created () {
+  created() {
     this.cartItemFrontVoList = JSON.parse(
       localStorage.getItem('cartItemFrontVoList')
     )
@@ -202,7 +202,7 @@ export default {
       this.addressForm = this.addressTable[0] // 把第一条地址赋给addressForm
     })
   },
-  data () {
+  data() {
     return {
       addressForm: {
         consignee: '',
@@ -220,14 +220,14 @@ export default {
     }
   },
   methods: {
-    changePosition (index) {
+    changePosition(index) {
       this.addressForm.position = this.addressTable[index].position
       this.addressForm.consignee = this.addressTable[index].consignee
       this.addressForm.telephone = this.addressTable[index].telephone
       this.addressForm.id = this.addressTable[index].id
       this.dialog = 0
     },
-    updateAddress () {
+    updateAddress() {
       if (this.methodWay === 1) {
         service({
           url: '/address',
@@ -264,22 +264,22 @@ export default {
         })
       }
     },
-    subTotal (count, price) {
+    subTotal(count, price) {
       return count * price
     },
-    totalCount () {
+    totalCount() {
       return this.cartItemFrontVoList.reduce(
         (sum, item) => sum + item.count,
         0
       )
     },
-    totalPrice () {
+    totalPrice() {
       return this.cartItemFrontVoList.reduce(
         (sum, item) => sum + item.price * item.count,
         0
       )
     },
-    placeOrder () {
+    placeOrder() {
       if (this.payment === '') {
         this.$alert('请选择支付方式')
       } else {
@@ -306,7 +306,7 @@ export default {
     }
   },
   computed: {
-    isNone () {
+    isNone() {
       const i = Object.values(this.addressForm).filter(
         (item) => item === ''
       ).length

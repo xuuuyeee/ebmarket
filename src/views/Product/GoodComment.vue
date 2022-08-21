@@ -47,43 +47,43 @@
 </template>
 <script>
 export default {
-    props:{
-        commentList: Array
+  props: {
+    commentList: Array
+  },
+  methods: {
+    cutString(str) {
+      return str.slice(0, 2)
     },
-    methods:{
-      cutString(str){
-        return  str.slice(0,2)
-      },
-      cutTime(str){
-        return str.replace('T',' ');
-      },
-      sortByCreateTime(){
-        this.isActive = 1;
-        this.commentList.sort((a,b) => Date.parse(a.createTime) - Date.parse(b.createTime))
-      },
-      sortBylevelGood(){
-        this.isActive = 2;
-        this.commentList.sort((a,b) => b.level - a.level);
-      },
-      sortBylevelBad(){
-        this.isActive = 3;
-        this.commentList.sort((a,b) => a.level - b.level);
-      }
+    cutTime(str) {
+      return str.replace('T', ' ')
     },
-    computed:{
-       countPeople(){
-          return this.commentList.length
-       },
-       countGood(){
-         return  (this.commentList.filter( item => item.level >= 4).length / this.commentList.length * 100).toFixed(2)
-       }
+    sortByCreateTime() {
+      this.isActive = 1
+      this.commentList.sort((a, b) => Date.parse(a.createTime) - Date.parse(b.createTime))
     },
-    data(){
-      return{
-        isActive: 0
-      }
+    sortBylevelGood() {
+      this.isActive = 2
+      this.commentList.sort((a, b) => b.level - a.level)
+    },
+    sortBylevelBad() {
+      this.isActive = 3
+      this.commentList.sort((a, b) => a.level - b.level)
     }
-};
+  },
+  computed: {
+    countPeople() {
+      return this.commentList.length
+    },
+    countGood() {
+      return (this.commentList.filter(item => item.level >= 4).length / this.commentList.length * 100).toFixed(2)
+    }
+  },
+  data() {
+    return {
+      isActive: 0
+    }
+  }
+}
 </script>
 <style lang="less" scoped>
 .good_comment {

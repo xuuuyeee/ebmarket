@@ -54,64 +54,64 @@
 <script>
 import service from '@/api/index'
 export default {
-  name: "MyRegister",
+  name: 'MyRegister',
   data() {
     return {
       obj: {
-        username: "",
-        telephone: "",
-        password: "",
-        email: "",
+        username: '',
+        telephone: '',
+        password: '',
+        email: ''
       },
-      pawordAg: "",
-    };
+      pawordAg: ''
+    }
   },
   methods: {
     judgeRegister() {
-      const judRule = /^[a-zA-Z0-9-_]{6,16}$/;
-      if (!(judRule.test(this.obj.username) && judRule.test(this.obj.password))){
-        this.$alert("用户名与密码设置不符", "提示", {
-          confirmButtonText: "确定",
-        });
+      const judRule = /^[a-zA-Z0-9-_]{6,16}$/
+      if (!(judRule.test(this.obj.username) && judRule.test(this.obj.password))) {
+        this.$alert('用户名与密码设置不符', '提示', {
+          confirmButtonText: '确定'
+        })
         return
       }
-      const judPhone = /^1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8}$/;
+      const judPhone = /^1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8}$/
       if (!judPhone.test(this.obj.telephone)) {
-        this.$alert("电话号码不符", "提示", {
-          confirmButtonText: "确定",
-        });
-       return
+        this.$alert('电话号码不符', '提示', {
+          confirmButtonText: '确定'
+        })
+        return
       }
-      const judEmail = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+      const judEmail = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
       if (!judEmail.test(this.obj.email)) {
-        this.$alert("电子邮件不符", "提示", {
-          confirmButtonText: "确定",
-        });
+        this.$alert('电子邮件不符', '提示', {
+          confirmButtonText: '确定'
+        })
         return
       }
       if (this.obj.password != this.pawordAg) {
-        this.$alert("两次密码输入不一致", "提示", {
-          confirmButtonText: "确定",
-        });
+        this.$alert('两次密码输入不一致', '提示', {
+          confirmButtonText: '确定'
+        })
         return
       }
       service({
-        url: "/user/register",
-        method: "POST",
-        params:{
-           ...this.obj
+        url: '/user/register',
+        method: 'POST',
+        params: {
+          ...this.obj
         }
-      }).then((res)=>{
-          if(res.param.code == 200){
-            this.$alert("注册成功", "提示", {
-            confirmButtonText: "确定",
-        });
+      }).then((res) => {
+        if (res.param.code == 200) {
+          this.$alert('注册成功', '提示', {
+            confirmButtonText: '确定'
+          })
           this.$router.replace('/login')
         }
       })
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>

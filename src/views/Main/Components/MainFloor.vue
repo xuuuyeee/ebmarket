@@ -22,30 +22,30 @@
           </div>
         </router-link>
       </li>
-      
+
     </ul>
   </div>
 </template>
 
 <script>
-import { BaseUrl } from "@/api/util";
+import { BaseUrl } from '@/api/util'
 export default {
-  name: "MainFloor",
+  name: 'MainFloor',
   props: {
     LeftImg: String,
-    goodsData: Array,
+    goodsData: Array
   },
   data() {
     return {
-      BaseUrl,
-    };
+      BaseUrl
+    }
   },
   methods: {
     split(str) {
-      return str.split(";")[0];
-    },
-  },
-};
+      return str.split(';')[0]
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>

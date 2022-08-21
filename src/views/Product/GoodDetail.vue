@@ -10,22 +10,22 @@
   </div>
 </template>
 <script>
-import { BaseUrl } from '@/api/util' 
+import { BaseUrl } from '@/api/util'
 export default {
-    props:{
-        goodDetailList: Array,
-        goodImageList: Array
-    },
-    data(){
-      return{
-        BaseUrl
-      }
+  props: {
+    goodDetailList: Array,
+    goodImageList: Array
+  },
+  data() {
+    return {
+      BaseUrl
     }
-};
+  }
+}
 </script>
 <style lang="less" scoped>
   .good_details{
-    
+
     padding: 60px 10% 40px 10%;
     .attrs{
       display: flex;

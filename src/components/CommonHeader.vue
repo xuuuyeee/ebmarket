@@ -3,7 +3,8 @@
     <div class="header-container wrapper">
       <router-link to="/"><h1>企业云业务超市</h1></router-link>
       <div class="nav">
-        <router-link to="/" @mouseover.native="commonHeaderListNum = 0"
+        <router-link to="/"
+@mouseover.native="commonHeaderListNum = 0"
           >首页</router-link
         >
         <router-link
@@ -102,105 +103,105 @@
 </template>
 
 <script>
-import eventBus from "@/EventBus/index";
+import eventBus from '@/EventBus/index'
 export default {
-  name: "CommonHeader",
+  name: 'CommonHeader',
   data() {
     return {
-      searchText: "",
+      searchText: '',
       isActive: false,
       commonHeaderListNum: 0,
       commonHeaderList: [
         [],
         [
           {
-            imgSrc: "",
-            title: "冷冻冷藏",
+            imgSrc: '',
+            title: '冷冻冷藏',
             id: 12,
-            description: "品质优选，值得拥有",
-          },
+            description: '品质优选，值得拥有'
+          }
         ],
         [
           {
-            imgSrc: "",
-            title: "茶咖酒具",
+            imgSrc: '',
+            title: '茶咖酒具',
             id: 2,
-            description: "品质优选，值得拥有",
-          },
+            description: '品质优选，值得拥有'
+          }
         ],
         [
           {
-            imgSrc: "",
-            title: "家用电器",
+            imgSrc: '',
+            title: '家用电器',
             id: 14,
-            description: "品质优选，值得拥有",
-          },
+            description: '品质优选，值得拥有'
+          }
         ],
         [
           {
-            imgSrc: "",
-            title: "宠物食品",
+            imgSrc: '',
+            title: '宠物食品',
             id: 7,
-            description: "品质优选，值得拥有",
-          },
+            description: '品质优选，值得拥有'
+          }
         ],
         [
           {
-            imgSrc: "",
-            title: "清洁用品",
+            imgSrc: '',
+            title: '清洁用品',
             id: 15,
-            description: "品质优选，值得拥有",
-          },
+            description: '品质优选，值得拥有'
+          }
         ],
         [
           {
-            imgSrc: "",
-            title: "母婴用品",
+            imgSrc: '',
+            title: '母婴用品',
             id: 13,
-            description: "品质优选，值得拥有",
-          },
+            description: '品质优选，值得拥有'
+          }
         ],
         [
           {
-            imgSrc: "",
-            title: "女士穿搭",
+            imgSrc: '',
+            title: '女士穿搭',
             id: 3,
-            description: "品质优选，值得拥有",
-          },
+            description: '品质优选，值得拥有'
+          }
         ],
         [
           {
-            imgSrc: "",
-            title: "古物文玩",
+            imgSrc: '',
+            title: '古物文玩',
             id: 16,
-            description: "品质优选，值得拥有",
-          },
-        ],
-      ],
-    };
+            description: '品质优选，值得拥有'
+          }
+        ]
+      ]
+    }
   },
   watch: {
     commonHeaderListNum(newVal, oldVal) {
       if (newVal === 0) {
-        this.isActive = false;
+        this.isActive = false
       } else {
-        this.isActive = true;
+        this.isActive = true
       }
-    },
+    }
   },
   methods: {
     searchGoods() {},
     fn(num) {
-      eventBus.$emit("send", this.commonHeaderList[num]);
+      eventBus.$emit('send', this.commonHeaderList[num])
     },
     canGoCart() {
-      if (localStorage.getItem("userInfo") == '') { 
-        return false;
+      if (localStorage.getItem('userInfo') == '') {
+        return false
       }
-      return true;
-    },
-  },
-};
+      return true
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>

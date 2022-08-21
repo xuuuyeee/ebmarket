@@ -5,12 +5,12 @@
         <router-link to="#" @click.native="exitAccount()">退出登录</router-link>|
         <router-link to="/user/order">我的订单</router-link>|
         <router-link to="#">关于我们</router-link>
-    </div> 
+    </div>
     <div class="wrapper" v-else>
       <router-link to="/login">请先登录</router-link>|
       <router-link to="/home/register">免费注册</router-link>|
       <router-link to="/login">我的订单</router-link>|
-      <router-link to="#">关于我们</router-link>     
+      <router-link to="#">关于我们</router-link>
     </div>
   </div>
 </template>
@@ -18,24 +18,24 @@
 <script>
 export default {
   name: 'CommonShortcuts',
-  data(){
-    return{
+  data() {
+    return {
       isLogin: false,
       username: ''
     }
   },
-  created(){
-    const userInfo = JSON.parse(localStorage.getItem('userInfo'))   
-    if(userInfo!= null){
-       this.isLogin = true
-       this.username = userInfo.username
+  created() {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+    if (userInfo != null) {
+      this.isLogin = true
+      this.username = userInfo.username
     }
   },
-  methods:{
-    exitAccount(){
-      localStorage.clear();
+  methods: {
+    exitAccount() {
+      localStorage.clear()
       this.isLogin = false
-      this.$router.replace('/login');
+      this.$router.replace('/login')
     }
   }
 }

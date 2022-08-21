@@ -43,7 +43,9 @@
           >提交
           </el-button
           >
-          <el-button size="mini" type="danger" @click="del(scope.$index)"
+          <el-button size="mini"
+type="danger"
+@click="del(scope.$index)"
           >删除
           </el-button
           >
@@ -88,7 +90,7 @@
 import service from '@/api'
 
 export default {
-  created () {
+  created() {
     service({
       url: '/address/getByUser',
       method: 'GET',
@@ -99,7 +101,7 @@ export default {
       this.addressTable = Array.from(res.data)
     })
   },
-  data () {
+  data() {
     return {
       addressTable: [],
       canNotChange: -1,
@@ -111,7 +113,7 @@ export default {
     }
   },
   methods: {
-    del (index) {
+    del(index) {
       console.log(index)
       service({
         url: '/address',
@@ -119,14 +121,14 @@ export default {
         params: {
           id: this.addressTable[index].id
         }
-      }).then(async (res) => {
+      }).then(async(res) => {
         if (res.data.code === 1 && res.data.data === true) {
           await this.$nextTick(() => this.addressTable.splice(index, 1))
           this.$message('一条收货人信息已被删除')
         }
       })
     },
-    edit (index, row) {
+    edit(index, row) {
       const consignee = row.consignee
       const telephone = row.telephone
       const position = row.position
@@ -146,13 +148,13 @@ export default {
         }
       })
     },
-    judgePho (phone) {
+    judgePho(phone) {
       const judPhone = /^1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8}$/
       if (!judPhone.test(phone)) {
         this.$message('请输入符合的电话号码')
       }
     },
-    addPosition () {
+    addPosition() {
       if (this.consigneeInfo.consignee.length === 0 || this.consigneeInfo.position.length === 0) {
         this.$message('电话、收件人地址、收件人姓名不能为空!')
         return

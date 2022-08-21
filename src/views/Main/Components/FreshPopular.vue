@@ -17,18 +17,18 @@
 </template>
 
 <script>
-import { BaseUrl } from "@/api/util";
+import { BaseUrl } from '@/api/util'
 export default {
-  name: "CommonPannel1",
+  name: 'CommonPannel1',
   props: {
-    goodsData: Array,
+    goodsData: Array
   },
   data() {
     return {
-      baseurl: BaseUrl,
-    };
-  },
-};
+      baseurl: BaseUrl
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>

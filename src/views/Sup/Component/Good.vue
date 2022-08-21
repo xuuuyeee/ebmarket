@@ -11,14 +11,14 @@
 <script>
 import { BaseUrl } from '@/api/util'
 export default {
-   props: {
-      obj : Object
-   },
-   data(){
-      return{
-         BaseUrl
-      }
-   }
+  props: {
+    obj: Object
+  },
+  data() {
+    return {
+      BaseUrl
+    }
+  }
 }
 </script>
 <style lang="less" scoped>
@@ -53,10 +53,8 @@ li{
  &:hover{
     transition: all 0.8s;
     transform: translate3d(0, -13px, 0);
-    box-shadow: 0 3px 8px  rgba(0,0,0,0.2);   
-  }  
+    box-shadow: 0 3px 8px  rgba(0,0,0,0.2);
+  }
 }
-
- 
 
 </style>

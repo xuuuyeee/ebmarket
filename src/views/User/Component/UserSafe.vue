@@ -41,54 +41,54 @@
   </div>
 </template>
 <script>
-import service from "@/api";
+import service from '@/api'
 export default {
   data() {
     return {
-      password: "",
-      newpassword: "",
-      newpasswordAg: "",
-    };
+      password: '',
+      newpassword: '',
+      newpasswordAg: ''
+    }
   },
   methods: {
     judgePwd() {
-      const judRule = /^[a-zA-Z0-9-_]{6,16}$/;
+      const judRule = /^[a-zA-Z0-9-_]{6,16}$/
       if (!judRule.test(this.newpassword)) {
-        this.$message("请输入6-16位由字母、数字、下划线组成的密码");
-        this.newpassword = "";
+        this.$message('请输入6-16位由字母、数字、下划线组成的密码')
+        this.newpassword = ''
       }
     },
     submit() {
-        if(this.password != JSON.parse(localStorage.getItem('userInfo')).password){
-            this.$message("旧密码输入错误");
-            this.newpassword = ''
-            this.password = ''
-            this.newpasswordAg = ''
-            return
-        }
-        if(this.newpassword != this.newpasswordAg){
-        this.newpassword = '';
-        this.newpasswordAg = '';
-        this.$message("两次新密码输入不一致");
+      if (this.password != JSON.parse(localStorage.getItem('userInfo')).password) {
+        this.$message('旧密码输入错误')
+        this.newpassword = ''
+        this.password = ''
+        this.newpasswordAg = ''
         return
-        }  
+      }
+      if (this.newpassword != this.newpasswordAg) {
+        this.newpassword = ''
+        this.newpasswordAg = ''
+        this.$message('两次新密码输入不一致')
+        return
+      }
       service({
-        url: "/user/updateUser",
-        method: "PUT",
+        url: '/user/updateUser',
+        method: 'PUT',
         data: {
           id: JSON.parse(localStorage.getItem('userInfo')).id,
-          password: this.newpassword,
+          password: this.newpassword
         }
       }).then(res => {
-          if(res.code == 1){
-            this.$message("修改密码成功，请重新登录");
-            localStorage.clear();
-            this.$router.replace('/login');
-          }
+        if (res.code == 1) {
+          this.$message('修改密码成功，请重新登录')
+          localStorage.clear()
+          this.$router.replace('/login')
+        }
       })
-    },
-  },
-};
+    }
+  }
+}
 </script>
 <style lang="less" scoped>
 .userSafe {

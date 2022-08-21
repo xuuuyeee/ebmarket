@@ -38,10 +38,10 @@ import service from '@/api/index'
 
 export default {
   name: 'MyMain',
-  created () {
+  created() {
     service({
       url: '/topic/getAll',
-      method: 'GET',
+      method: 'GET'
     }).then((res) => {
       this.topicList = Array.from(res.data)
       const data = [1, 2, 3]
@@ -63,19 +63,19 @@ export default {
     MainTitle,
     FreshPopular,
     MainFloor,
-    TopicDiv,
+    TopicDiv
   },
-  data () {
+  data() {
     return {
       coverPic: [
         { imgSrc: require('@/assets/uploads/clothes_goods_cover.jpg') },
         { imgSrc: require('@/assets/uploads/kitchen_goods_cover.jpg') },
-        { imgSrc: require('@/assets/uploads/home_goods_cover.jpg') },
+        { imgSrc: require('@/assets/uploads/home_goods_cover.jpg') }
       ],
       topicList: [],
-      topicGoodList: [],
+      topicGoodList: []
     }
-  },
+  }
 }
 </script>
 

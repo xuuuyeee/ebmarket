@@ -32,15 +32,15 @@
   </div>
 </template>
 <script>
-import { BaseUrl } from "@/api/util";
+import { BaseUrl } from '@/api/util'
 export default {
-  props: ["recList"],
+  props: ['recList'],
   data() {
     return {
-      BaseUrl,
-    };
-  },
-};
+      BaseUrl
+    }
+  }
+}
 </script>
 <style lang="less" scoped>
 .header {
