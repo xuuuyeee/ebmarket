@@ -28,7 +28,7 @@
             <span class="iconfont icon-jiesuo"></span>
             <input
               type="password"
-              placeholder="设置6至16位字母、数字和符号组合"
+              placeholder="设置6至16位字母、数字组合"
               v-model="obj.password"
             />
           </div>
@@ -68,28 +68,33 @@ export default {
   },
   methods: {
     judgeRegister() {
-      const judRule = /^[a-zA-Z0-9-_]{6,16}$/
-      if (!(judRule.test(this.obj.username) && judRule.test(this.obj.password))) {
-        this.$alert('用户名与密码设置不符', '提示', {
+      const judUsername = /^.{3,16}$/
+      if (!judUsername.test(this.obj.username)) {
+        this.$alert('用户名为3~16个字符', '提示', { confirmButtonText: '确定' })
+        return
+      }
+      const judRule = /^[A-Za-z0-9]{6,16}$/
+      if (!judRule.test(this.obj.password)) {
+        this.$alert('密码为6~16个英文或数字', '提示', {
           confirmButtonText: '确定'
         })
         return
       }
-      const judPhone = /^1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8}$/
+      const judPhone = /^[1][3-9][0-9]{9}$/
       if (!judPhone.test(this.obj.telephone)) {
         this.$alert('电话号码不符', '提示', {
           confirmButtonText: '确定'
         })
         return
       }
-      const judEmail = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+      const judEmail = /^([-_A-Za-z0-9.]+)@([_A-Za-z0-9]+\.)+[A-Za-z0-9]{2,3}$/
       if (!judEmail.test(this.obj.email)) {
         this.$alert('电子邮件不符', '提示', {
           confirmButtonText: '确定'
         })
         return
       }
-      if (this.obj.password != this.pawordAg) {
+      if (this.obj.password !== this.pawordAg) {
         this.$alert('两次密码输入不一致', '提示', {
           confirmButtonText: '确定'
         })
@@ -102,12 +107,8 @@ export default {
           ...this.obj
         }
       }).then((res) => {
-        if (res.param.code == 200) {
-          this.$alert('注册成功', '提示', {
-            confirmButtonText: '确定'
-          })
-          this.$router.replace('/login')
-        }
+        this.$message.success('注册成功')
+        this.$router.replace('/login')
       })
     }
   }
