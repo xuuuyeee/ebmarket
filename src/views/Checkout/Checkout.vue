@@ -300,6 +300,7 @@ export default {
         }).then((res) => {
           console.log(res)
           this.$message.success('下单成功')
+          this.$router.push({ name: 'userOrder' })
         })
       }
     }
