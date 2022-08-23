@@ -22,7 +22,7 @@ service.interceptors.response.use(
         showClose: true,
         message: res.msg ?? '服务器处理错误！',
         type: 'error',
-        duration: 3 * 1000
+        duration: 5 * 1000
       })
       return Promise.reject(new Error(res.msg || 'Error'))
     } else {

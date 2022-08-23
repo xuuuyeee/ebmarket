@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container userReturn">
     <el-row>
       <el-col :span="12">
         <el-input v-model="searchText" placeholder="输入订单编号搜索" />
@@ -21,9 +21,10 @@
         sortable
         show-overflow-tooltip
       />
-      <el-table-column label="操作">
+      <el-table-column label="操作" min-width="150px">
         <template v-slot="scope">
-          <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">处理</el-button>
+          <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">查看对应订单商品</el-button>
+          <el-button size="mini" type="warning" @click="handleTransport(scope.$index, scope.row)" :disabled="scope.row.state !== 1">客户发货</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -40,10 +41,11 @@ export default {
       tableData: [],
       tableLoading: true,
       tableInfo: [
-        { prop: 'id', label: '编号' },
+        { prop: 'id', label: '退货单编号' },
         { prop: 'orderId', label: '订单编号' },
         { prop: 'userName', label: '用户名' },
         { prop: 'createTime', label: '申请时间' },
+        { prop: 'reason', label: '申请原因' },
         { prop: 'state', label: '订单状态' },
         { prop: 'totalPrice', label: '退货金额' },
         { prop: 'updateTime', label: '更新时间' }
@@ -58,7 +60,9 @@ export default {
   methods: {
     fetchData() {
       this.tableLoading = true
-      returnOrderApi.getList().then(res => {
+      returnOrderApi.getByUsername(
+        JSON.parse(localStorage.getItem('userInfo')).username
+      ).then(res => {
         console.log(res.data)
         this.tableData = res.data
         this.tableLoading = false
@@ -75,15 +79,15 @@ export default {
         case 'state':
           switch (row[column.property]) {
             case 0:
-              return '待审核'
+              return '等待平台审核'
             case 1:
-              return '待收货'
+              return '等待客户发货'
             case 2:
-              return '已收货'
+              return '等待平台收货和退款'
             case 3:
-              return '已退款'
+              return '退货完成'
             case 4:
-              return '已关闭'
+              return '平台拒绝退货'
             default:
               return row[column.property]
           }
@@ -92,15 +96,24 @@ export default {
       }
     },
     handleEdit(index, row) {
-      this.$router.push({ name: 'ReturnOrderEdit', query: { id: row.id }})
+      this.$router.push({ name: 'userOrderItem', query: { orderId: row.orderId }})
+    },
+    handleTransport(index, row) {
+      returnOrderApi.updateOne({
+        id: row.id,
+        state: 2
+      }).then(res => {
+        this.$message.success('客户已退货，等待平台收货与退款')
+        this.fetchData()
+      })
     }
   }
 }
 </script>
 
 <style>
-.el-table .warning-row {
-  background: orange;
+.userReturn .el-table__row td:nth-child(6) {
+  color: red;
 }
 </style>
 

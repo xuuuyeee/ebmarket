@@ -1,5 +1,5 @@
 <template>
-  <el-container class="wrapper" style="margin: 10px; width: 100%; height: 100%">
+  <el-container class="wrapper" style="margin: 10px; width: 100%; min-height: 600px">
     <el-aside width="200px" style="background-color: #fff; margin-right: 20px">
         <ul>
           <li><router-link to="userInfo" :class="{active: isActive === 1}" @click.native="isActive = 1">个人信息</router-link></li>
