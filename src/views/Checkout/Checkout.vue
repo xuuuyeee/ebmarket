@@ -18,8 +18,7 @@
                 dialog = 2;
                 methodWay = 1;
               "
-            >修改地址</a
-            >
+            >修改地址</a>
             <div class="none" v-else>您需要先添加收货地址才可提交订单。</div>
           </div>
           <div class="action">
@@ -300,7 +299,7 @@ export default {
           }
         }).then((res) => {
           console.log(res)
-          this.$message('下单成功')
+          this.$message.success('下单成功')
         })
       }
     }

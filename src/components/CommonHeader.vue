@@ -3,78 +3,27 @@
     <div class="header-container wrapper">
       <router-link to="/"><h1>企业云业务超市</h1></router-link>
       <div class="nav">
-        <router-link to="/"
-@mouseover.native="commonHeaderListNum = 0"
-          >首页</router-link
-        >
+        <router-link to="/">首页</router-link>
         <router-link
-          to="/category/4"
-          @mouseover.native="commonHeaderListNum = 1"
-          @click.native="fn(1)"
-          >美食</router-link
-        >
-        <router-link
-          to="/category/5"
-          @mouseover.native="commonHeaderListNum = 2"
-          @click.native="fn(2)"
-          >餐厨</router-link
-        >
-        <router-link
-          to="/category/6"
-          @mouseover.native="commonHeaderListNum = 3"
-          @click.native="fn(3)"
-          >电器</router-link
-        >
-        <router-link
-          to="/category/7"
-          @mouseover.native="commonHeaderListNum = 4"
-          @click.native="fn(4)"
-          >居家</router-link
-        >
-        <router-link
-          to="/category/8"
-          @mouseover.native="commonHeaderListNum = 5"
-          @click.native="fn(5)"
-          >洗护</router-link
-        >
-        <router-link
-          to="/category/9"
-          @mouseover.native="commonHeaderListNum = 6"
-          @click.native="fn(6)"
-          >孕婴</router-link
-        >
-        <router-link
-          to="/category/10"
-          @mouseover.native="commonHeaderListNum = 7"
-          @click.native="fn(7)"
-          >服装</router-link
-        >
-        <router-link
-          to="/category/11"
-          @mouseover.native="commonHeaderListNum = 8"
-          @click.native="fn(8)"
-          >杂货</router-link
-        >
+          v-for="(item,index) in categoryList"
+          :key="index"
+          to="/"
+          @mouseover.native="currentIdx = index; isActive = true"
+        >{{ item.catName }}</router-link>
       </div>
       <div
-        :class="[isActive ? 'show_Hidden_nav' : 'hidden_nav']"
+        :class="isActive  ? 'show_Hidden_nav' : 'hidden_nav'"
         class="second_nav"
-        @mouseleave="commonHeaderListNum = 0"
+        @mouseleave="isActive = false"
       >
-        <ul style="display: flex">
+        <ul style="display: flex; justify-content: center" v-if="currentIdx !== -1">
           <li
-            v-for="(obj, index) in commonHeaderList[commonHeaderListNum]"
+            v-for="(item, index) in categoryList[currentIdx].children"
             :key="index"
             style="margin: 25px 40px"
           >
-            <router-link
-              :to="{ name: 'sup', params: { way: 'cat', sort: obj.id } }"
-            >
-              <el-image
-                :src="obj.imgSrc"
-                style="width: 60px; height: 60px"
-              ></el-image>
-              <p>{{ obj.title }}</p>
+            <router-link :to="{ name: 'sup', params: { way: 'cat', sort: item.id } }">
+              <p>{{ item.catName }}</p>
             </router-link>
           </li>
         </ul>
@@ -94,7 +43,7 @@
           @click.prevent="canGoCart()"
         >
           <div class="car">
-            <span>0</span>
+<!--            <span>0</span>-->
           </div>
         </router-link>
       </div>
@@ -104,113 +53,76 @@
 
 <script>
 import eventBus from '@/EventBus/index'
+import categoryApi from '@/api/CategoryApi'
 export default {
   name: 'CommonHeader',
+  mounted() {
+    const categoryList = this.categoryList
+    categoryApi.getList().then(res => {
+      res.data.forEach(item => { if (item.parentId === -1) categoryList.push({ ...item, children: [] }) })
+      res.data.forEach(item => {
+        if (item.parentId !== -1) {
+          const parent = categoryList.find(e => e.id === item.parentId)
+          if (parent !== undefined) { parent.children.push(item) }
+        }
+      })
+      console.log(this.categoryList)
+    })
+  },
   data() {
     return {
       searchText: '',
       isActive: false,
-      commonHeaderListNum: 0,
-      commonHeaderList: [
-        [],
-        [
-          {
-            imgSrc: '',
-            title: '冷冻冷藏',
-            id: 12,
-            description: '品质优选，值得拥有'
-          }
-        ],
-        [
-          {
-            imgSrc: '',
-            title: '茶咖酒具',
-            id: 2,
-            description: '品质优选，值得拥有'
-          }
-        ],
-        [
-          {
-            imgSrc: '',
-            title: '家用电器',
-            id: 14,
-            description: '品质优选，值得拥有'
-          }
-        ],
-        [
-          {
-            imgSrc: '',
-            title: '宠物食品',
-            id: 7,
-            description: '品质优选，值得拥有'
-          }
-        ],
-        [
-          {
-            imgSrc: '',
-            title: '清洁用品',
-            id: 15,
-            description: '品质优选，值得拥有'
-          }
-        ],
-        [
-          {
-            imgSrc: '',
-            title: '母婴用品',
-            id: 13,
-            description: '品质优选，值得拥有'
-          }
-        ],
-        [
-          {
-            imgSrc: '',
-            title: '女士穿搭',
-            id: 3,
-            description: '品质优选，值得拥有'
-          }
-        ],
-        [
-          {
-            imgSrc: '',
-            title: '古物文玩',
-            id: 16,
-            description: '品质优选，值得拥有'
-          }
-        ]
-      ]
+      categoryList: [],
+      currentIdx: -1
     }
   },
   watch: {
-    commonHeaderListNum(newVal, oldVal) {
-      if (newVal === 0) {
-        this.isActive = false
-      } else {
-        this.isActive = true
-      }
-    }
+    // currentIdx(newVal, oldVal) {
+    //   console.log(newVal)
+    //   this.isActive = newVal !== 0
+    // }
   },
   methods: {
-    searchGoods() {},
+    searchGoods() {
+      if (this.searchText.trim() !== '') {
+        this.$router.push({
+          name: 'sup',
+          params: { way: 'search', sort: '0' },
+          query: { searchText: this.searchText.trim() }
+        })
+        this.searchText = ''
+      }
+    },
     fn(num) {
-      eventBus.$emit('send', this.commonHeaderList[num])
+      eventBus.$emit('send', this.categoryList[num])
     },
     canGoCart() {
-      if (localStorage.getItem('userInfo') == '') {
-        return false
-      }
-      return true
+      return localStorage.getItem('userInfo') !== ''
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
+.show_Hidden_nav p{
+  font-size: 20px;
+  color: #27ba9b;
+}
+.hidden_nav p{
+  font-size: 20px;
+  color: #27ba9b;
+}
+.nav a {
+  font-size: 20px;
+}
 .header-container {
   background-color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 130px;
+  height: 80px;
+  margin-bottom: 15px;
   h1 {
     width: 220px;
     line-height: 130px;
@@ -233,7 +145,7 @@ export default {
     width: 1240px;
     background-color: #fff;
     position: absolute;
-    top: 170px;
+    top: 120px;
     overflow: hidden;
     opacity: 1;
     box-shadow: 0 0 5px #ccc;
@@ -241,7 +153,7 @@ export default {
     z-index: 5000;
   }
   .show_Hidden_nav {
-    height: 120px;
+    height: 70px;
   }
   .hidden_nav {
     height: 0;
@@ -275,7 +187,7 @@ export default {
       width: 23px;
       height: 23px;
       margin: 0 15px;
-      background: url("@/assets/images/sprites.png") -119px -69px;
+      background: url("~@/assets/images/sprites.png") -119px -69px;
       span {
         position: absolute;
         top: -7px;

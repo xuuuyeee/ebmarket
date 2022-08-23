@@ -76,6 +76,16 @@ const routes = [
             path: 'userOrder',
             component: () => import('@/views/User/Component/UserOrder.vue'),
             name: 'userOrder'
+          },
+          {
+            path: 'userOrderItem',
+            component: () => import('@/views/User/Component/UserOrderItem'),
+            name: 'userOrderItem'
+          },
+          {
+            path: 'userReturn',
+            component: () => import('@/views/User/Component/UserReturn'),
+            name: 'userReturn'
           }
         ]
       }

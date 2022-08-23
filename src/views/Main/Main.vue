@@ -2,10 +2,10 @@
   <div class="main-container">
     <!-- 轮播图 -->
     <Banner></Banner>
-    <!-- 新鲜好物 -->
+
     <div
       class="newGoods wrapper"
-      v-for="(topic, index) in topicList.slice(0, 2)"
+      v-for="(topic, index) in topicList"
       :key="index"
     >
       <main-title :href="topic.id">
@@ -16,15 +16,14 @@
         <template #price="{ data }"><small>￥</small>{{ data }}</template>
       </fresh-popular>
     </div>
-    <!-- 生鲜 -->
 
-    <topic-div
-      v-for="(topic,index) in topicList.slice(2,6)"
-      :key="topic.id"
-      :topic="topic"
-      :coverPic="coverPic[index].imgSrc"
-      :goodsData="topicGoodList[2+index]"
-    ></topic-div>
+<!--    <topic-div-->
+<!--      v-for="(topic,index) in topicList.slice(2,6)"-->
+<!--      :key="topic.id"-->
+<!--      :topic="topic"-->
+<!--      :coverPic="coverPic[index].imgSrc"-->
+<!--      :goodsData="topicGoodList[2+index]"-->
+<!--    ></topic-div>-->
   </div>
 </template>
 
@@ -32,8 +31,8 @@
 import Banner from '@/views/Main/Components/Banner'
 import MainTitle from '@/views/Main/Components/MainTitle'
 import FreshPopular from '@/views/Main/Components/FreshPopular'
-import MainFloor from '@/views/Main/Components/MainFloor'
-import TopicDiv from '@/views/Main/Components/TopicDiv'
+// import MainFloor from '@/views/Main/Components/MainFloor'
+// import TopicDiv from '@/views/Main/Components/TopicDiv'
 import service from '@/api/index'
 
 export default {
@@ -43,27 +42,27 @@ export default {
       url: '/topic/getAll',
       method: 'GET'
     }).then((res) => {
-      this.topicList = Array.from(res.data)
-      const data = [1, 2, 3]
+      this.topicList = res.data.filter(item => item.topicName.trim() !== '轮播图')
+      const topicIds = this.topicList.map(item => item.id)
       service({
         url: '/product/getByTopicList',
         method: 'POST',
-        data: JSON.stringify(data)
+        data: JSON.stringify(topicIds)
       }).then((res) => {
-        console.log(res.data)
+        // console.log(res.data)
         for (let i = 0; i < res.data.length; i++) {
           this.topicGoodList.push(res.data[i].productVoList)
         }
-        console.log(this.topicGoodList)
+        // console.log(this.topicGoodList)
       })
     })
   },
   components: {
     Banner,
     MainTitle,
-    FreshPopular,
-    MainFloor,
-    TopicDiv
+    FreshPopular
+    // MainFloor,
+    // TopicDiv
   },
   data() {
     return {

@@ -1,16 +1,16 @@
 <template>
   <div class="shortcuts">
     <div class="wrapper" v-if="isLogin">
-        <router-link to="/user">{{username}}</router-link>|
-        <router-link to="#" @click.native="exitAccount()">退出登录</router-link>|
-        <router-link to="/user/order">我的订单</router-link>|
-        <router-link to="#">关于我们</router-link>
+      <router-link to="/user">{{username}}</router-link>|
+      <router-link to="/user/userOrder">我的订单</router-link>|
+      <router-link to="#" @click.native="exitAccount()">退出登录</router-link>
+<!--        <router-link to="#">关于我们</router-link>-->
     </div>
     <div class="wrapper" v-else>
       <router-link to="/login">请先登录</router-link>|
-      <router-link to="/home/register">免费注册</router-link>|
-      <router-link to="/login">我的订单</router-link>|
-      <router-link to="#">关于我们</router-link>
+      <router-link to="/home/register">免费注册</router-link>
+<!--      <router-link to="/login">我的订单</router-link>-->
+<!--      <router-link to="#">关于我们</router-link>-->
     </div>
   </div>
 </template>

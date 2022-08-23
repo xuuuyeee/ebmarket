@@ -1,5 +1,5 @@
 <template>
-  <div class="userOrder" style="min-height: 400px">
+  <div class="app-container">
     <el-row>
       <el-col :span="12">
         <el-input v-model="searchText" placeholder="输入订单编号搜索" />
@@ -7,7 +7,7 @@
     </el-row>
 
     <el-table
-      :data="tableData.filter(data => !searchText || data.id.toString().includes(searchText))"
+      :data="tableData.filter(data => !searchText || data.orderId.toString().includes(searchText))"
       stripe
       border
       style="width: 100%;margin-top: 10px"
@@ -21,20 +21,18 @@
         sortable
         show-overflow-tooltip
       />
-      <el-table-column label="操作" min-width="150px">
+      <el-table-column label="操作">
         <template v-slot="scope">
-          <el-button size="mini" type="success" @click="getOrderDetail(scope.$index, scope.row)">详情</el-button>
-          <el-button size="mini" type="warning" @click="receiveProduct(scope.$index, scope.row)" :disabled="scope.row.state !== 2">确认收货</el-button>
-          <el-button size="mini" type="success" @click="handleReturn(scope.$index, scope.row)">退货</el-button>
+          <el-button size="mini" type="primary" @click="handleEdit(scope.$index, scope.row)">处理</el-button>
         </template>
       </el-table-column>
     </el-table>
   </div>
 </template>
+
 <script>
-import orderApi from '@/api/OrderApi'
-import { parseTime } from '@/utils'
 import returnOrderApi from '@/api/ReturnOrderApi'
+import { parseTime } from '@/utils'
 
 export default {
   data() {
@@ -42,15 +40,12 @@ export default {
       tableData: [],
       tableLoading: true,
       tableInfo: [
-        { prop: 'id', label: '订单编号' },
+        { prop: 'id', label: '编号' },
+        { prop: 'orderId', label: '订单编号' },
         { prop: 'userName', label: '用户名' },
+        { prop: 'createTime', label: '申请时间' },
         { prop: 'state', label: '订单状态' },
-        { prop: 'totalPrice', label: '总价格' },
-        // { prop: 'transportName', label: '运输公司' },
-        // { prop: 'transportNumber', label: '运输单号' },
-        { prop: 'payment', label: '支付方式' },
-        // { prop: 'payTime', label: '支付时间' },
-        { prop: 'createTime', label: '创建时间' },
+        { prop: 'totalPrice', label: '退货金额' },
         { prop: 'updateTime', label: '更新时间' }
       ],
       searchText: '',
@@ -62,9 +57,9 @@ export default {
   },
   methods: {
     fetchData() {
-      const userName = JSON.parse(localStorage.getItem('userInfo')).username
       this.tableLoading = true
-      orderApi.getByUsername(userName).then(res => {
+      returnOrderApi.getList().then(res => {
+        console.log(res.data)
         this.tableData = res.data
         this.tableLoading = false
       }).catch(() => { this.tableData = []; this.tableLoading = false })
@@ -80,13 +75,13 @@ export default {
         case 'state':
           switch (row[column.property]) {
             case 0:
-              return '待付款'
+              return '待审核'
             case 1:
-              return '待发货'
+              return '待收货'
             case 2:
-              return '已发货'
+              return '已收货'
             case 3:
-              return '已完成'
+              return '已退款'
             case 4:
               return '已关闭'
             default:
@@ -96,26 +91,16 @@ export default {
           return row[column.property]
       }
     },
-    getOrderDetail(index, row) {
-      this.$router.push({ name: 'userOrderItem', query: { orderId: row.id }})
-    },
-    receiveProduct(index, row) {
-      const orderObj = {
-        id: row.id,
-        state: 3
-      }
-      orderApi.updateOne(orderObj).then(() => {
-        this.$message.success('收货成功')
-        this.fetchData()
-      })
-    },
-    handleReturn(index, row) {
-      returnOrderApi.getByOrderId(row.id).then(res => {
-        // if (res.data)
-      })
+    handleEdit(index, row) {
+      this.$router.push({ name: 'ReturnOrderEdit', query: { id: row.id }})
     }
   }
 }
 </script>
-<style  lang="less" scoped>
+
+<style>
+.el-table .warning-row {
+  background: orange;
+}
 </style>
+

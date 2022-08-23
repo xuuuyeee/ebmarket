@@ -13,22 +13,24 @@
       <input
         type="text"
         class="searchTerm"
-        placeholder="     你想要什么？这里都有哦！"
+        v-model="searchText"
+        placeholder=" 你想要什么？这里都有哦！"
+        @keydown.enter="searchGoods()"
       />
-      <button type="submit" class="searchButton">
+      <button type="submit" class="searchButton" @click="searchGoods">
         <svg class="icon"><use xlink:href="#icon-sousuo"></use></svg>
       </button>
     </div>
     <div style="margin-top: 25px" class="filter_button_group">
       <ul style="display: flex; margin: 0 40px">
         <li>
-          <button @click="sortByid()"  :style="{border: (isActive != 1  ? '1px solid #e4e4e4' : '1px solid #5eb69c')}">默认排序</button>
+          <button @click="sortByid()"  :style="{border: (isActive !== 1  ? '1px solid #e4e4e4' : '1px solid #5eb69c')}">默认排序</button>
         </li>
         <li>
-          <button @click="sortByCreateTime()" :style="{border: (isActive != 2 ? '1px solid #e4e4e4' : '1px solid #5eb69c')}">最新商品</button>
+          <button @click="sortByCreateTime()" :style="{border: (isActive !== 2 ? '1px solid #e4e4e4' : '1px solid #5eb69c')}">最新商品</button>
         </li>
         <li>
-          <button @click="sortByPrice()" :style="{border: (isActive != 3  ? '1px solid #e4e4e4' : '1px solid #5eb69c')}">价格排序</button>
+          <button @click="sortByPrice()" :style="{border: (isActive !== 3  ? '1px solid #e4e4e4' : '1px solid #5eb69c')}">价格排序</button>
         </li>
       </ul>
     </div>
@@ -42,35 +44,29 @@
 <script>
 import service from '@/api'
 import Good from './Component/Good.vue'
+import searchApi from '@/api/SearchApi'
 export default {
   components: {
     Good
   },
   data() {
     return {
-      list: [
-        {
-          imgSrc:
-            'https://yanxuan-item.nosdn.127.net/b9d46625f648ae26aa84194e4810ab15.jpg',
-          good_name: '干湿两用懒人抹布1卷50节',
-          good_desc: '木浆吸水吸油，热销200万卷',
-          good_price: (13.9).toFixed(2),
-          good_id: '7767890'
-        }
-      ],
+      list: [],
       way: '',
       sort: -1,
-      isActive: 0
+      isActive: 0,
+      searchText: ''
     }
   },
   watch: {
     $route(to, from) {
       this.sort = this.$route.params.sort
       this.way = this.$route.params.way
+      this.list = []
       this.getData(this.way, this.sort)
     }
   },
-  created() {
+  mounted() {
     this.sort = this.$route.params.sort
     this.way = this.$route.params.way
     this.list = []
@@ -78,7 +74,7 @@ export default {
   },
   methods: {
     getData(way, sort) {
-      if (way == 'cat') {
+      if (way === 'cat') {
         service({
           url: '/product/getByCategory',
           method: 'GET',
@@ -97,7 +93,7 @@ export default {
             })
           }
         })
-      } else if (way == 'top') {
+      } else if (way === 'top') {
         console.log('hello')
         service({
           url: 'product/getByTopic',
@@ -118,7 +114,37 @@ export default {
             })
           }
         })
+      } else if (way === 'search') {
+        this.searchText = this.$route.query.searchText
+        searchApi.searchProduct(this.searchText).then(res => {
+          this.list = []
+          for (let i = 0; i < res.data.length; i++) {
+            this.list.push({
+              id: res.data[i].id,
+              prodName: res.data[i].prodName,
+              price: res.data[i].price,
+              desc: res.data[i].description.split(';')[0],
+              imgSrc: res.data[i].mainImagePosition[0],
+              createTime: res.data[i].createTime
+            })
+          }
+        })
       }
+    },
+    searchGoods() {
+      searchApi.searchProduct(this.searchText).then(res => {
+        this.list = []
+        for (let i = 0; i < res.data.length; i++) {
+          this.list.push({
+            id: res.data[i].id,
+            prodName: res.data[i].prodName,
+            price: res.data[i].price,
+            desc: res.data[i].description.split(';')[0],
+            imgSrc: res.data[i].mainImagePosition[0],
+            createTime: res.data[i].createTime
+          })
+        }
+      })
     },
     sortByid() {
       this.isActive = 1
@@ -150,6 +176,7 @@ export default {
     border-radius: 5px 0 0 5px;
     outline: none;
     color: #5eb69c;
+    font-size: 20px;
     &:focus {
       color: black;
     }

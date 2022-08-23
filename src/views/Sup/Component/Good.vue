@@ -1,11 +1,11 @@
 <template>
    <li>
-        <router-link :to="`/product/${obj.id}`" class="good_router">
+      <router-link :to="`/product/${obj.id}`" class="good_router">
         <el-image :src="BaseUrl+obj.imgSrc" style="height:160px; width:160px"></el-image>
         <p class="good_font good_name">{{obj.prodName}}</p>
         <p class="good_font good_desc">{{obj.desc}}</p>
         <p class="good_price">￥{{obj.price}}</p>
-        </router-link>
+      </router-link>
    </li>
 </template>
 <script>
@@ -41,7 +41,7 @@ li{
  }
   .good_desc{
      color: #999;
-     height: 29px;
+     min-height: 32px;
      padding-top: 10px;
   }
   .good_price{

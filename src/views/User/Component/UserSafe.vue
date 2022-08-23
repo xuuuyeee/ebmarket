@@ -17,7 +17,7 @@
       <el-input
         type="password"
         v-model="newpassword"
-        placeholder="密码6-16位的字母、数字、下划线组成"
+        placeholder="密码6-16位的字母、数字组成"
         id="newpassword"
         @blur="judgePwd"
       ></el-input>
@@ -52,21 +52,21 @@ export default {
   },
   methods: {
     judgePwd() {
-      const judRule = /^[a-zA-Z0-9-_]{6,16}$/
+      const judRule = /^[a-zA-Z0-9]{6,16}$/
       if (!judRule.test(this.newpassword)) {
-        this.$message('请输入6-16位由字母、数字、下划线组成的密码')
+        this.$message('请输入6-16位由字母、数字组成的密码')
         this.newpassword = ''
       }
     },
     submit() {
-      if (this.password != JSON.parse(localStorage.getItem('userInfo')).password) {
+      if (this.password !== JSON.parse(localStorage.getItem('userInfo')).password) {
         this.$message('旧密码输入错误')
         this.newpassword = ''
         this.password = ''
         this.newpasswordAg = ''
         return
       }
-      if (this.newpassword != this.newpasswordAg) {
+      if (this.newpassword !== this.newpasswordAg) {
         this.newpassword = ''
         this.newpasswordAg = ''
         this.$message('两次新密码输入不一致')
@@ -80,11 +80,9 @@ export default {
           password: this.newpassword
         }
       }).then(res => {
-        if (res.code == 1) {
-          this.$message('修改密码成功，请重新登录')
-          localStorage.clear()
-          this.$router.replace('/login')
-        }
+        this.$message('修改密码成功，请重新登录')
+        localStorage.clear()
+        this.$router.replace('/login')
       })
     }
   }

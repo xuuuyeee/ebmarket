@@ -1,53 +1,44 @@
 <template>
   <div class="footer">
-    <div class="contact wrapper clearfix">
-        <dl>
-          <dt>客户服务</dt>
-          <dd class="chat">在线客服</dd>
-          <dd class="feedback">问题反馈</dd>
-        </dl>
-        <dl>
-          <dt>关注我们</dt>
-          <dd class="weixin">公众号</dd>
-          <dd class="weibo">微博</dd>
-        </dl>
-        <dl>
-          <dt>下载APP</dt>
-          <dd class="qrcode">
-            <img src="@/assets/uploads/qrcode.png" alt="">
-          </dd>
-          <dd class="download">
-            <span>扫描二维码</span>
-            <span>立马下载APP</span>
-            <a href="javascript:;">下载页面</a>
-          </dd>
-        </dl>
-        <dl>
-          <dt>服务热线</dt>
-          <dd class="hotline">
-            400-0000-000
-            <small>周一至周日 8:00-18:00</small>
-          </dd>
-        </dl>
-    </div>
+<!--    <div class="contact wrapper clearfix">-->
+<!--        <dl>-->
+<!--          <dt>客户服务</dt>-->
+<!--          <dd class="chat">在线客服</dd>-->
+<!--          <dd class="feedback">问题反馈</dd>-->
+<!--        </dl>-->
+<!--        <dl>-->
+<!--          <dt>关注我们</dt>-->
+<!--          <dd class="weixin">公众号</dd>-->
+<!--          <dd class="weibo">微博</dd>-->
+<!--        </dl>-->
+<!--        <dl>-->
+<!--          <dt>下载APP</dt>-->
+<!--          <dd class="qrcode">-->
+<!--            <img src="@/assets/uploads/qrcode.png" alt="">-->
+<!--          </dd>-->
+<!--          <dd class="download">-->
+<!--            <span>扫描二维码</span>-->
+<!--            <span>立马下载APP</span>-->
+<!--            <a href="javascript:;">下载页面</a>-->
+<!--          </dd>-->
+<!--        </dl>-->
+<!--        <dl>-->
+<!--          <dt>服务热线</dt>-->
+<!--          <dd class="hotline">-->
+<!--            400-0000-000-->
+<!--            <small>周一至周日 8:00-18:00</small>-->
+<!--          </dd>-->
+<!--        </dl>-->
+<!--    </div>-->
     <div class="extra">
       <div class="wrapper">
         <div class="slogan">
-          <a href="javascript:;" class="price">价格亲民</a>
-          <a href="javascript:;" class="express">物流快捷</a>
-          <a href="javascript:;" class="quality">品质新鲜</a>
+          <a href="javascript:" class="price">价格亲民</a>
+          <a href="javascript:" class="express">物流快捷</a>
+          <a href="javascript:" class="quality">品质新鲜</a>
         </div>
         <div class="copyright">
-          <p>
-            <a href="javascript:;">关于我们</a>|
-            <a href="javascript:;">帮助中心</a>|
-            <a href="javascript:;">售后服务</a>|
-            <a href="javascript:;">配送与验收</a>|
-            <a href="javascript:;">商务合作</a>|
-            <a href="javascript:;">搜索推荐</a>|
-            <a href="javascript:;">友情链接</a>
-          </p>
-          <p>CopyRight © 小兔鲜儿</p>
+          <p>CopyRight © 企业云业务超市</p>
         </div>
       </div>
     </div>
@@ -64,6 +55,7 @@ export default {
   .footer {
     background: #fff;
     border-top: 1px solid #e4e4e4;
+    margin-top: 15px;
     .contact {
       padding: 60px 0 40px 25px;
       dl {
@@ -102,7 +94,7 @@ export default {
             width: 40px;
             height: 30px;
             margin: 0 auto 8px;
-            background-image: url('@/assets/images/sprites.png');
+            background-image: url('~@/assets/images/sprites.png');
           }
         }
         .chat {
@@ -191,8 +183,7 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        height: 178px;
-        padding: 60px 100px;
+        padding: 30px 50px;
         border-bottom: 1px solid #434343;
         text-align: justify;
         a {
@@ -207,7 +198,7 @@ export default {
             width: 58px;
             height: 58px;
             margin-right: 10px;
-            background-image: url('@/assets/images/sprites.png');
+            background-image: url('~@/assets/images/sprites.png');
             vertical-align: middle;
           }
         }
@@ -223,7 +214,7 @@ export default {
         }
       }
       .copyright {
-        height: 170px;
+        height: 100px;
         padding-top: 40px;
         text-align: center;
         color: #999;

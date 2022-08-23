@@ -2,58 +2,50 @@
   <div class="banner-list">
     <div class="wrapper">
       <!-- banner图 有多少张图片就有多少个li -->
-      <el-carousel class="carousel" trigger="click" height="500px">
-        <el-carousel-item v-for="(picSrc, index) in item" :key="index" >
-          <el-image :src="picSrc"></el-image>
+      <el-carousel class="carousel" trigger="click" height="500px" style="text-align: center">
+        <el-carousel-item v-for="(item, index) in carouselList" :key="index" >
+          <el-image :src="baseURL + item.detailImagePosition[0]" style="width: 1250px; height: 500px;" @click="imageToProduct(item.id)"/>
         </el-carousel-item>
       </el-carousel>
-      <div class="list">
-        <ul>
-          <li>
-            <a href="javascript:;">生鲜<span>水果 蔬菜</span></a>
-          </li>
-          <li>
-            <a href="javascript:;">美食<span>面点 干果</span></a>
-          </li>
-          <li>
-            <a href="javascript:;">餐厨<span>厨具 锅具</span></a>
-          </li>
-          <li>
-            <a href="javascript:;">电器<span>生活电器 厨卫</span></a>
-          </li>
-          <li>
-            <a href="javascript:;">居家<span>床品 被枕</span></a>
-          </li>
-          <li>
-            <a href="javascript:;">洗护<span>洗发 美妆</span></a>
-          </li>
-          <li>
-            <a href="javascript:;">孕婴<span>奶粉 玩具</span></a>
-          </li>
-          <li>
-            <a href="javascript:;">服饰<span>女装 男装</span></a>
-          </li>
-          <li>
-            <a href="javascript:;">杂货<span>户外 图书</span></a>
-          </li>
-          <li>
-            <a href="javascript:;">品牌<span>品牌制造</span></a>
-          </li>
-        </ul>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
+
+import topicApi from '@/api/TopicApi'
+import topicItemApi from '@/api/TopicItemApi'
+import { BaseUrl } from '@/api/util'
+
 export default {
   name: 'MyBanner',
+  mounted() {
+    topicApi.getList().then(res => {
+      for (const e of res.data) {
+        if (e.topicName.trim() === '轮播图') { this.carouselId = e.id; break }
+      }
+      if (this.carouselId !== -1) {
+        topicItemApi.getTopicDetail(this.carouselId).then(res => {
+          // console.log(res.data)
+          this.carouselList = res.data
+        })
+      }
+    })
+  },
   data() {
     return {
+      carouselId: -1,
+      carouselList: null,
+      baseURL: BaseUrl,
       item: [
         'http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/6d202d8e-bb47-4f92-9523-f32ab65754f4.jpg',
         'http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/4a79180a-1a5a-4042-8a77-4db0b9c800a8.jpg'
       ]
+    }
+  },
+  methods: {
+    imageToProduct(produtcId) {
+      this.$router.push('/product/' + produtcId)
     }
   }
 }
@@ -98,7 +90,7 @@ export default {
               content: "";
               width: 6px;
               height: 11px;
-              background: url("@/assets/images/sprites.png") -80px -110px;
+              background: url("~@/assets/images/sprites.png") -80px -110px;
             }
           }
         }

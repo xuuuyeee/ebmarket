@@ -19,9 +19,10 @@ service.interceptors.response.use(
     // if the custom code is 0, it is judged as an error.
     if (res.code === 0) {
       Message({
+        showClose: true,
         message: res.msg ?? '服务器处理错误！',
         type: 'error',
-        duration: 5 * 1000
+        duration: 3 * 1000
       })
       return Promise.reject(new Error(res.msg || 'Error'))
     } else {

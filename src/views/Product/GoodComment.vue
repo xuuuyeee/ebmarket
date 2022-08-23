@@ -14,9 +14,9 @@
     </div>
     <div class="sort">
       <span>排序：</span>
-      <a href="javascript:;" @click.prevent="sortByCreateTime()" :style="{color:(isActive == 1 ? '#27ba9b': '#666')}">最新</a>
-      <a href="javascript:;"  @click.prevent="sortBylevelGood()" :style="{color:(isActive == 2 ? '#27ba9b': '#666')}">好评</a>
-      <a href="javascript:;"  @click.prevent="sortBylevelBad()"  :style="{color:(isActive == 3 ? '#27ba9b': '#666')}">差评</a>
+      <a href="javascript:" @click.prevent="sortByCreateTime()" :style="{color:(isActive === 1 ? '#27ba9b': '#666')}">最新</a>
+      <a href="javascript:"  @click.prevent="sortBylevelGood()" :style="{color:(isActive === 2 ? '#27ba9b': '#666')}">好评</a>
+      <a href="javascript:"  @click.prevent="sortBylevelBad()"  :style="{color:(isActive === 3 ? '#27ba9b': '#666')}">差评</a>
     </div>
     <div class="list">
       <div class="item" v-for="(obj,index) in commentList" :key="index">

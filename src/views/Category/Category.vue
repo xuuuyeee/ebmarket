@@ -67,6 +67,7 @@ import { BaseUrl } from '@/api/util'
 export default {
   created() {
     this.sort = this.$route.params.sort
+    console.log(this.sort)
     eventBus.$on('send', (arr) => {
       this.category_second = arr
       this.getData(this.sort)

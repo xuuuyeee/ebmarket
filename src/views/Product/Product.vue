@@ -22,7 +22,7 @@
           >
             <el-image
               :src="BaseUrl + goodInfo.list[selectedImageNum]"
-              style="max-width: 100%; max_height: 100%; vertical-align: middle"
+              style="max-width: 100%; max-height: 100%; vertical-align: middle"
             ></el-image>
             <div
               class="image_layer"
@@ -37,7 +37,7 @@
           <ul class="small_image" @mouseover="checkPic($event)">
             <li
               v-for="(obj, index) in goodInfo.list"
-              :class="{ active_image: selectedImageNum == index }"
+              :class="{ active_image: selectedImageNum === index }"
               :key="index"
               :data-index="index"
             >
@@ -104,12 +104,12 @@
         </button>
       </div>
     </div>
-    <Recommend :recList="recList" style="background-color: #fff"></Recommend>
+<!--    <Recommend :recList="recList" style="background-color: #fff"></Recommend>-->
     <div class="wrapper" style="margin-top: 20px">
       <div class="good_tabs">
         <nav>
           <a
-            href="javascript:;"
+            href="javascript:"
             @click="
               comName = 'GoodDetail';
               isTabClick = true;
@@ -118,7 +118,7 @@
           >商品详情</a
           >
           <a
-            href="javascript:;"
+            href="javascript:"
             @click="
               comName = 'GoodComment';
               isTabClick = false;
@@ -137,18 +137,9 @@
       </div>
     </div>
     <div class="good_warn wrapper">
-      <h3>注意事项</h3>
-      <p class="tit">• 如何申请退货?</p>
+      <h3>退货流程</h3>
       <p>
-        1.自收到商品之日起30日内，顾客可申请无忧退货，退款将原路返还，不同的银行处理时间不同，预计1-5个工作日到账；
-      </p>
-      <p>2.内裤和食品等特殊商品无质量问题不支持退货；</p>
-      <p>
-        3.退货流程：
-        确认收货-申请退货-客服审核通过-用户寄回商品-仓库签收验货-退款审核-退款完成；
-      </p>
-      <p>
-        4.因小兔鲜儿产生的退货，如质量问题，退货邮费由小兔鲜儿承担，退款完成后会以现金券的形式报销。因客户个人原因产生的退货，购买和寄回运费由客户个人承担。
+        确认收货-申请退货-平台审核通过-用户寄回商品-平台签收验货-平台退款-退款完成；
       </p>
     </div>
   </div>
@@ -223,7 +214,7 @@ export default {
     addCart(id, num, selectList, price) {
       if (localStorage.getItem('userInfo') !== '') {
         if (Object.values(selectList).some((item) => item.length === 0)) {
-          this.$message('请选择商品的规格后再加入购物车')
+          this.$message.warning('请选择商品的规格后再加入购物车')
           return
         }
         service({
@@ -241,11 +232,11 @@ export default {
             .join(';')
           if (
             !cartItemFrontVoList.every(
-              (item) => item.productId != id || item.attributeValue != arrStr
+              (item) => item.productId !== id || item.attributeValue !== arrStr
             )
           ) {
             const tmp = cartItemFrontVoList.find(
-              (item) => item.productId == id && item.attributeValue == arrStr
+              (item) => item.productId === id && item.attributeValue === arrStr
             )
             num = num + tmp.count
             service({
@@ -261,7 +252,7 @@ export default {
                 id: tmp.id
               }
             }).then((res) => {
-              this.$message('商品添加购物车完成')
+              this.$message.success('商品添加购物车完成')
             })
           } else {
             service({
@@ -276,12 +267,12 @@ export default {
                 totalPrice: price * num
               }
             }).then((res) => {
-              this.$message('商品添加购物车完成')
+              this.$message.success('商品添加购物车完成')
             })
           }
         })
       } else {
-        this.$message('登录后才能购物哦')
+        this.$message.warning('登录后才能购物哦')
       }
     },
     getData(sort) {
@@ -320,9 +311,9 @@ export default {
         }).then((res) => {
           this.recList = []
           for (let i = 0, j = 0; i < res.data.length; i++) {
-            if ((i + 1) % 4 == 0 || i == 0) {
+            if ((i + 1) % 4 === 0 || i === 0) {
               this.recList.push([])
-              if (i != 0) j++
+              if (i !== 0) j++
             }
             this.recList[j].push({
               id: res.data[i].id,
@@ -352,7 +343,7 @@ export default {
       })
       const cutString = (str) => {
         const arr = Array.from(str.split(';').slice(1))
-        if (arr[0] == '') {
+        if (arr[0] === '') {
           return []
         } else {
           const ans = []
@@ -579,7 +570,7 @@ export default {
 }
 
 .good_warn {
-  min-height: 300px;
+  //min-height: 300px;
   background: #fff;
   margin-top: 20px;
   margin-bottom: 20px;

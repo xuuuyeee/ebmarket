@@ -20,20 +20,19 @@
             />
           </div>
           <div class="agree">
-            <label class="xtx-checkbox">
-              <input type="checkbox" v-model="isAgree"/>
-            </label>
-            <span>我已同意</span>
-            <a href="javascript:">《隐私条款》</a>
-            <span>和</span>
-            <a href="javascript:">《服务条款》</a>
+<!--            <label class="xtx-checkbox">-->
+<!--              <input type="checkbox" v-model="isAgree"/>-->
+<!--            </label>-->
+<!--            <span>我已同意</span>-->
+<!--            <a href="javascript:">《隐私条款》</a>-->
+<!--            <span>和</span>-->
+<!--            <a href="javascript:">《服务条款》</a>-->
           </div>
           <div class="button">
             <a href="javascript:"
-class="btn"
-@click.prevent="judgeLogin()"
-            >登录</a
-            >
+              class="btn"
+              @click.prevent="judgeLogin()"
+            >登录</a>
             <div class="other">
               <router-link to="/home/register">免费注册</router-link>
             </div>
@@ -57,19 +56,14 @@ export default {
   },
   methods: {
     judgeLogin() {
-      const judRule = /^[a-zA-Z0-9-_]{6,16}$/
-      if (this.isAgree === false) {
-        this.$alert('尚未同意隐私条款与服务条款', '提示', {
-          confirmButtonText: '确定'
-        })
+      const judUsername = /^.{3,16}$/
+      if (!judUsername.test(this.username)) {
+        this.$alert('用户名为3~16个字符', '提示', { confirmButtonText: '确定' })
         return
       }
-      if (!(judRule.test(this.username) && judRule.test(this.password))) {
-        this.$alert('用户名与密码不符', '提示', {
-          confirmButtonText: '确定'
-        })
-        this.username = ''
-        this.password = ''
+      const judRule = /^[A-Za-z0-9]{6,16}$/
+      if (!judRule.test(this.password)) {
+        this.$alert('密码为6~16个英文或数字', '提示', { confirmButtonText: '确定' })
         return
       }
       service({
@@ -79,27 +73,26 @@ export default {
           userName: this.username,
           password: this.password
         }
+      }).then((res) => {
+        if (res.code === 1) {
+          const userInfo = res.data
+          localStorage.setItem('userInfo', JSON.stringify(userInfo))
+          service({
+            url: '/cart/getByUserId',
+            method: 'GET',
+            params: {
+              id: res.data.id
+            }
+          }).then(result => {
+            localStorage.setItem('userCartInfo', JSON.stringify(result.data))
+          })
+          this.$router.replace('/home')
+        } else {
+          this.$alert('用户名与密码输入错误', '提示', {
+            confirmButtonText: '确定'
+          })
+        }
       })
-        .then((res) => {
-          if (res.code === 1) {
-            const userInfo = res.data
-            localStorage.setItem('userInfo', JSON.stringify(userInfo))
-            service({
-              url: '/cart/getByUserId',
-              method: 'GET',
-              params: {
-                id: res.data.id
-              }
-            }).then(result => {
-              localStorage.setItem('userCartInfo', JSON.stringify(result.data))
-            })
-            this.$router.replace('/home')
-          } else {
-            this.$alert('用户名与密码输入错误', '提示', {
-              confirmButtonText: '确定'
-            })
-          }
-        })
         .finally(() => {
           this.username = ''
           this.password = ''
@@ -112,7 +105,7 @@ export default {
 <style lang="less" scoped>
 .login-main {
   height: 488px;
-  background-image: url("@/assets/images/login-bg.png");
+  background-image: url("~@/assets/images/login-bg.png");
 
   .wrapper {
     position: relative;

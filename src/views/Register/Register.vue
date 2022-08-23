@@ -8,7 +8,7 @@
             <span class="iconfont icon-jurassic_user"></span>
             <input
               type="text"
-              placeholder="设置用户名称"
+              placeholder="用户名(3~16个字符)"
               v-model="obj.username"
             />
           </div>
@@ -16,19 +16,19 @@
             <span class="iconfont icon-phone"></span>
             <input
               type="text"
-              placeholder="输入手机号码"
+              placeholder="手机号码"
               v-model="obj.telephone"
             />
           </div>
           <div class="xtx-form-item">
             <span class="iconfont icon-xiaoxi"></span>
-            <input type="text" placeholder="输入电子邮箱" v-model="obj.email" />
+            <input type="text" placeholder="电子邮箱" v-model="obj.email" />
           </div>
           <div class="xtx-form-item">
             <span class="iconfont icon-jiesuo"></span>
             <input
               type="password"
-              placeholder="设置6至16位字母、数字组合"
+              placeholder="密码(6~16位字母或数字组合)"
               v-model="obj.password"
             />
           </div>
@@ -36,7 +36,7 @@
             <span class="iconfont icon-jiesuo"></span>
             <input
               type="password"
-              placeholder="请再次输入上面密码"
+              placeholder="再次输入上面密码"
               v-model="pawordAg"
             />
           </div>

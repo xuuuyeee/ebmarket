@@ -49,7 +49,7 @@
             <el-button
               type="primary"
               icon="el-icon-delete"
-              @click="delGood(scope.$index)"
+              @click="delGood(scope.$index, scope.row)"
               style="background-color: #27ba9b; border: #27ba9b"
             ></el-button>
           </template>
@@ -76,12 +76,12 @@ text-color="#27ba9b"
         </div>
       </div>
     </el-main>
-    <Recommend :recList="recList"></Recommend>
+<!--    <Recommend :recList="recList"></Recommend>-->
   </el-container>
 </template>
 <script>
 import service from '@/api'
-import Recommend from './Recommend/Recommend.vue'
+// import Recommend from './Recommend/Recommend.vue'
 import { BaseUrl } from '@/api/util'
 
 export default {
@@ -99,24 +99,9 @@ export default {
             'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
           state: true,
           attr: '粉色 纪念款 2019'
-        },
-        {
-          goods_name: '24寸搜神记铝框拉杆箱',
-          price: 384,
-          count: 1,
-          imgSrc:
-            'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
-          state: true,
-          attr: '粉色 纪念款 2019'
         }
       ],
       recList: [
-        [
-          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
-          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
-          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
-          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png'
-        ],
         [
           'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
           'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
@@ -157,16 +142,19 @@ export default {
         0
       )
     },
-    delGood(index) {
+    delGood(index, row) {
+      console.log('----------------------')
+      console.log(row)
+      console.log(this.cartItemFrontVoList)
       this.cartItemFrontVoList.splice(index, 1)
-      const { cartItemId: id } = this.cartItemFrontVoList[index]
+      // const { cartItemId: id } = this.cartItemFrontVoList[index]
       service({
         url: '/cartItem',
         method: 'DELETE',
         params: {
-          id
+          id: row.id
         }
-      })
+      }).then(res => this.$message.success('已将商品移出购物车'))
     },
     changeNum(index) {
       const {
@@ -195,6 +183,7 @@ export default {
         this.cartItemFrontVoList = []
         for (let i = 0; i < res.data.cartItemFrontVoList.length; i++) {
           this.cartItemFrontVoList.push({
+            id: res.data.cartItemFrontVoList[i].id,
             cartId: res.data.cartItemFrontVoList[i].cartId,
             prodName: res.data.cartItemFrontVoList[i].productName,
             attr: res.data.cartItemFrontVoList[i].attributeValue,
@@ -214,16 +203,16 @@ export default {
     checkList() {
       console.log(
         '这里是购物车',
-        this.cartItemFrontVoList.filter((item) => item.state == true)
+        this.cartItemFrontVoList.filter((item) => item.state === true)
       )
-      localStorage.setItem('cartItemFrontVoList', JSON.stringify(this.cartItemFrontVoList.filter((item) => item.state == true)))
+      localStorage.setItem('cartItemFrontVoList', JSON.stringify(this.cartItemFrontVoList.filter((item) => item.state === true)))
       this.$router.push({
         path: '/checkout'
       })
     }
   },
   components: {
-    Recommend
+    // Recommend
   }
 }
 </script>

@@ -114,17 +114,17 @@ export default {
   },
   methods: {
     del(index) {
-      console.log(index)
+      // console.log(index)
       service({
         url: '/address',
         method: 'DELETE',
         params: {
           id: this.addressTable[index].id
         }
-      }).then(async(res) => {
-        if (res.data.code === 1 && res.data.data === true) {
-          await this.$nextTick(() => this.addressTable.splice(index, 1))
-          this.$message('一条收货人信息已被删除')
+      }).then((res) => {
+        if (res.data === true) {
+          this.$nextTick(() => this.addressTable.splice(index, 1))
+          this.$message.success('一条收货人信息已被删除')
         }
       })
     },
@@ -143,20 +143,20 @@ export default {
         }
       }).then((res) => {
         if (res.code === 1) {
-          this.$message('一条收货人信息修改已完成')
+          this.$message.success('一条收货人信息修改已完成')
           this.canNotChange = -1
         }
       })
     },
     judgePho(phone) {
-      const judPhone = /^1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8}$/
+      const judPhone = /^[1][3-9][0-9]{9}$/
       if (!judPhone.test(phone)) {
-        this.$message('请输入符合的电话号码')
+        this.$message.warning('请输入正确的电话号码')
       }
     },
     addPosition() {
       if (this.consigneeInfo.consignee.length === 0 || this.consigneeInfo.position.length === 0) {
-        this.$message('电话、收件人地址、收件人姓名不能为空!')
+        this.$message.warning('电话、收件人地址、收件人姓名不能为空!')
         return
       }
       service({
@@ -169,12 +169,10 @@ export default {
           userId: JSON.parse(localStorage.getItem('userInfo')).id
         }
       }).then((res) => {
-        if (res.code === 1) {
-          this.$message('地址添加完成')
-          this.addressTable.push({
-            ...this.consigneeInfo
-          })
-        }
+        this.$message.success('地址添加完成')
+        this.addressTable.push({
+          ...this.consigneeInfo
+        })
       }).finally(() => {
         this.consigneeInfo.consignee = ''
         this.consigneeInfo.telephone = ''

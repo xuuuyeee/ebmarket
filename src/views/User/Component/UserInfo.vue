@@ -51,8 +51,8 @@ size="small"
 </template>
 <script>
 import service from '@/api/index'
-import thisTime from '@/api/util'
-import Thistime from '@/api/util'
+// import thisTime from '@/api/util'
+// import Thistime from '@/api/util'
 export default {
   created() {
     const userInfo = JSON.parse(localStorage.getItem('userInfo'))
@@ -78,10 +78,7 @@ export default {
         inputErrorMessage: '密码输入错误',
         inputType: 'password',
         inputValidator: (value) => {
-          if (value != this.password) {
-            return false
-          }
-          return true
+          return value === this.password
         }
       })
         .then(({ value }) => {
@@ -102,12 +99,11 @@ export default {
       const { isDeleted, isEnabled, createTime, id, role, password } = JSON.parse(
         localStorage.getItem('userInfo')
       )
-      const juduserName = /^[a-zA-Z0-9-_]{6,16}$/
+      const juduserName = /^.{3,16}$/
       const judPhone = /^1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8}$/
-      if (!(juduserName.test(this.username) && judPhone.test(this.telephone))) {
-        this.$alert('修改内容不符合规定', '提示', {
-          confirmButtonText: '确定'
-        })
+      const judEmail = /^([-_A-Za-z0-9.]+)@([_A-Za-z0-9]+\.)+[A-Za-z0-9]{2,3}$/
+      if (!(juduserName.test(this.username) && judPhone.test(this.telephone) && judEmail.test(this.email))) {
+        this.$message.error('用户名为3~16个字符！或其他格式错误！')
         this.$router.go(0)
         return
       }
@@ -121,13 +117,11 @@ export default {
           username: this.username
         }
       }).then((res) => {
-        if (res.code == 1) {
-          this.$alert('修改个人信息成功，请重新登录', '标题名称', {
-            confirmButtonText: '确定'
-          })
-          localStorage.clear()
-          this.$router.replace('/login')
-        }
+        this.$alert('修改个人信息成功，请重新登录', '标题名称', {
+          confirmButtonText: '确定'
+        })
+        localStorage.clear()
+        this.$router.replace('/login')
       })
     }
   }

@@ -57,7 +57,7 @@ export default {
         margin-left: 13px;
         width: 7px;
         height: 13px;
-        background: url('@/assets/images/sprites.png') 0 -109px;
+        background: url('~@/assets/images/sprites.png') 0 -109px;
         vertical-align: middle;
       }
     }

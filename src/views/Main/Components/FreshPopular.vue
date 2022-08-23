@@ -34,7 +34,8 @@ export default {
 <style lang="less" scoped>
 .pannel {
   display: flex;
-  justify-content: space-between;
+  justify-content: left;
+  gap: 14px;
   a {
     display: flex;
     flex-direction: column;
@@ -72,7 +73,7 @@ export default {
     }
   }
   .cyan {
-    background-color: #f0f9f4;
+    background-color: #D5F5E3;
   }
   .white {
     background-color: #fff;
