@@ -1,13 +1,21 @@
 <template>
   <div class="userOrder" style="min-height: 400px">
-    <el-row>
+    <el-row :gutter="20">
+      <el-col :span="3">
+        <el-select v-model="selection" placeholder="筛选订单状态">
+          <el-option label="全部" value="0" />
+          <el-option label="待平台发货" value="1" />
+          <el-option label="平台已发货" value="2" />
+          <el-option label="订单已完成" value="3" />
+        </el-select>
+      </el-col>
       <el-col :span="12">
-        <el-input v-model="searchText" placeholder="输入订单编号搜索" />
+        <el-input v-model="searchText" placeholder="输入订单编号搜索"/>
       </el-col>
     </el-row>
 
     <el-table
-      :data="tableData.filter(data => !searchText || data.id.toString().includes(searchText))"
+      :data="tableDataComputed"
       stripe
       border
       style="width: 100%;margin-top: 10px"
@@ -82,7 +90,7 @@ export default {
         { prop: 'updateTime', label: '更新时间' }
       ],
       searchText: '',
-      selection: null,
+      selection: '0',
       dialogTableVisible: false,
       dialogFormVisible: false,
       formLabelWidth: '120px',
@@ -90,6 +98,20 @@ export default {
         orderId: -1,
         reason: ''
       }
+    }
+  },
+  computed: {
+    tableDataComputed() {
+      let res = this.tableData
+      const s = parseInt(this.selection, 10)
+      console.log(this.tableData)
+      if (s === 1 || s === 2 || s === 3) {
+        res = res.filter(data => data.state === s)
+      }
+      if (this.searchText.trim() !== '') {
+        res = res.filter(data => data.id.toString().includes(this.searchText))
+      }
+      return res
     }
   },
   mounted() {
@@ -165,6 +187,9 @@ export default {
         this.$message.success('订单申请退货成功，请耐心等待审核！')
         this.$router.push({ name: 'userReturn' })
       })
+    },
+    selectState(e) {
+      console.log(e.srcElement.value)
     }
   }
 }
