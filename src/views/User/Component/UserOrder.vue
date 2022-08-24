@@ -187,9 +187,6 @@ export default {
         this.$message.success('订单申请退货成功，请耐心等待审核！')
         this.$router.push({ name: 'userReturn' })
       })
-    },
-    selectState(e) {
-      console.log(e.srcElement.value)
     }
   }
 }
