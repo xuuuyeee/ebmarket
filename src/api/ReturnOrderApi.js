@@ -18,12 +18,12 @@ export default {
   getByUsername: (userName) => request({
     url: '/returnOrder/search',
     method: 'GET',
-    params: userName
+    params: { userName }
   }),
   getByOrderId: (orderId) => request({
     url: '/returnOrder/search',
     method: 'GET',
-    params: orderId
+    params: { orderId }
   }),
   takeOver: (orderId, reason) => request({
     url: '/returnOrder/takeOver',
