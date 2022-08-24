@@ -24,6 +24,6 @@ export default {
   getByUsername: (userName) => request({
     url: '/order/search',
     method: 'GET',
-    params: userName
+    params: { userName }
   })
 }
