@@ -143,9 +143,9 @@ export default {
       )
     },
     delGood(index, row) {
-      console.log('----------------------')
-      console.log(row)
-      console.log(this.cartItemFrontVoList)
+      // console.log('----------------------')
+      // console.log(row)
+      // console.log(this.cartItemFrontVoList)
       this.cartItemFrontVoList.splice(index, 1)
       // const { cartItemId: id } = this.cartItemFrontVoList[index]
       service({

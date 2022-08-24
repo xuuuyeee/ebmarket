@@ -23,13 +23,7 @@
           </div>
           <div class="action">
             <button class="addressBtn" @click="dialog = 1">切换地址</button>
-            <button
-              class="addressBtn"
-              @click="
-                dialog = 2;
-                methodWay = 2;
-              "
-            >
+            <button class="addressBtn" @click="dialog = 2; methodWay = 2;">
               添加地址
             </button>
           </div>
@@ -79,7 +73,7 @@
         >
           <div class="dia-wrapper" :class="{ 'dia2-fade': dialog === 2 }">
             <div class="header">
-              <h3>切换收货地址</h3>
+              <h3>添加收货地址</h3>
               <a href="javascript:"></a>
             </div>
             <div class="body">
@@ -90,7 +84,7 @@
                 <el-form-item label="收货人电话号码">
                   <el-input v-model="addressForm.telephone"></el-input>
                 </el-form-item>
-                <el-form-item label="收货人名称">
+                <el-form-item label="收货人地址">
                   <el-input v-model="addressForm.position"></el-input>
                 </el-form-item>
               </el-form>
@@ -227,6 +221,24 @@ export default {
       this.dialog = 0
     },
     updateAddress() {
+      const telRule = /^[1][3-9][0-9]{9}$/
+      if (this.addressForm.consignee.trim() === '') {
+        this.$message.warning('请填写收件人')
+        return
+      }
+      if (!telRule.test(this.addressForm.telephone)) {
+        this.$message.warning('请填写正确的电话')
+        return
+      }
+      if (this.addressForm.position.trim() === '') {
+        this.$message.warning('请填写地址')
+        return
+      }
+
+      // console.log(this.addressForm)
+      // console.log(this.methodWay)
+      // return
+
       if (this.methodWay === 1) {
         service({
           url: '/address',
@@ -244,20 +256,32 @@ export default {
           this.$set(this.addressTable, index, { ...this.addressForm })
         })
       } else if (this.methodWay === 2) {
-        this.addressForm.consignee = ''
-        this.addressForm.position = ''
-        this.addressForm.telephone = ''
+        // this.addressForm.consignee = ''
+        // this.addressForm.position = ''
+        // this.addressForm.telephone = ''
         service({
           url: '/address',
           method: 'POST',
           data: {
-            ...this.addressForm,
+            consignee: this.addressForm.consignee,
+            telephone: this.addressForm.telephone,
+            position: this.addressForm.position,
             userId: JSON.parse(localStorage.getItem('userInfo')).id
           }
         }).then((res) => {
           console.log(res)
           this.$message('收货人信息添加成功')
-          this.addressTable.push({ ...this.addressForm })
+          // this.addressTable.push({ ...this.addressForm })
+          service({
+            url: '/address/getByUser',
+            method: 'GET',
+            params: {
+              id: JSON.parse(localStorage.getItem('userInfo')).id
+            }
+          }).then((res) => {
+            this.addressTable = Array.from(res.data)
+            this.addressForm = this.addressTable[0] // 把第一条地址赋给addressForm
+          })
           this.dialog = 0
           this.methodWay = 0
         })
@@ -300,6 +324,19 @@ export default {
         }).then((res) => {
           console.log(res)
           this.$message.success('下单成功')
+          const endPoints = []
+          for (const cartItemSelectListKey of this.cartItemSelectList) {
+            endPoints.push(service({
+              url: '/cartItem',
+              method: 'DELETE',
+              params: {
+                id: cartItemSelectListKey
+              }
+            }))
+          }
+          Promise.all(endPoints).then(() => {
+            console.log('已从购物车中移除订单商品')
+          })
           this.$router.push({ name: 'userOrder' })
         })
       }
