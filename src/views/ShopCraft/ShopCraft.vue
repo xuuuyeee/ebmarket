@@ -11,24 +11,28 @@
       <el-table :data="cartItemFrontVoList">
         <el-table-column label="选择" width="100">
           <template slot-scope="scope">
-            <input type="checkbox" v-model="scope.row.state"/>
+            <input type="checkbox" v-model="scope.row.state" />
           </template>
         </el-table-column>
-        <el-table-column label="商品信息" width="400">
+        <el-table-column label="商品信息" width="450">
           <template slot-scope="scope">
-            <div style="display: flex; justify-content: center">
+            <div style="display: flex; justify-content: center;">
               <el-image
                 :src="BaseUrl + scope.row.imagePosition"
-                style="width: 100px; height: 100px; display: inline-block"
+                style="width: 100px; height: 100px; display: inline-block; flex: 3"
               ></el-image>
-              <div class="goods_name">
+              <div class="goods_name" style="flex: 7">
                 <span>{{ scope.row.prodName }}</span>
                 <span>{{ scope.row.attr }}</span>
               </div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="price" label="单价"></el-table-column>
+        <el-table-column label="单价">
+          <template slot-scope="scope">
+            <span>￥{{ scope.row.price }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="数量">
           <template slot-scope="scope">
             <el-input-number
@@ -62,125 +66,119 @@
     >
       <div class="action">
         <div class="batch">
-          <el-checkbox v-model="isAll"
-fill="#27ba9b"
-text-color="#27ba9b"
-          ><span>全选</span></el-checkbox
+          <el-checkbox v-model="isAll" fill="#27ba9b" text-color="#27ba9b"
+            ><span>全选</span></el-checkbox
           >&nbsp;
         </div>
         <div class="settle_count">
           共<span>{{ allCount() }}</span
-        >件商品，已经选择<span>{{ selectedCount() }}</span
-        >件，商品合计：<span class="red">￥{{ sumTotal() }}</span>
+          >件商品，已经选择<span>{{ selectedCount() }}</span
+          >件，商品合计：<span class="red">￥{{ sumTotal() }}</span>
           <button class="green_button" @click="checkList()">下单结算</button>
         </div>
       </div>
     </el-main>
-<!--    <Recommend :recList="recList"></Recommend>-->
+    <!--    <Recommend :recList="recList"></Recommend>-->
   </el-container>
 </template>
 <script>
-import service from '@/api'
+import service from "@/api";
 // import Recommend from './Recommend/Recommend.vue'
-import { BaseUrl } from '@/api/util'
+import { BaseUrl } from "@/api/util";
 
 export default {
   created() {
-    this.updateCart()
+    this.updateCart();
   },
   data() {
     return {
       list: [
         {
-          goods_name: '24寸搜神记铝框拉杆箱',
+          goods_name: "24寸搜神记铝框拉杆箱",
           price: 384,
           count: 1,
           imgSrc:
-            'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
+            "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
           state: true,
-          attr: '粉色 纪念款 2019'
-        }
+          attr: "粉色 纪念款 2019",
+        },
       ],
       recList: [
         [
-          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
-          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
-          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png',
-          'https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png'
-        ]
+          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
+          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
+          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
+          "https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png",
+        ],
       ],
       cartItemFrontVoList: [],
-      BaseUrl
-    }
+      BaseUrl,
+    };
   },
   computed: {
     isAll: {
       set(val) {
-        this.cartItemFrontVoList.forEach((obj) => (obj.state = val))
+        this.cartItemFrontVoList.forEach((obj) => (obj.state = val));
       },
       get() {
-        return this.cartItemFrontVoList.every((obj) => obj.state === true)
-      }
-    }
+        return this.cartItemFrontVoList.every((obj) => obj.state === true);
+      },
+    },
   },
   methods: {
     subTotal(price, count) {
-      return Number.parseFloat(price * count).toFixed(2)
+      return Number.parseFloat(price * count).toFixed(2);
     },
     allCount() {
-      return this.cartItemFrontVoList.reduce((sum, obj) => sum + obj.count, 0)
+      return this.cartItemFrontVoList.reduce((sum, obj) => sum + obj.count, 0);
     },
     selectedCount() {
       return this.cartItemFrontVoList.reduce(
         (sum, obj) => (obj.state ? sum + obj.count : sum),
         0
-      )
+      );
     },
     sumTotal() {
       return this.cartItemFrontVoList.reduce(
         (sum, obj) => (obj.state ? sum + obj.count * obj.price : sum),
         0
-      )
+      );
     },
     delGood(index, row) {
       // console.log('----------------------')
       // console.log(row)
       // console.log(this.cartItemFrontVoList)
-      this.cartItemFrontVoList.splice(index, 1)
+      this.cartItemFrontVoList.splice(index, 1);
       // const { cartItemId: id } = this.cartItemFrontVoList[index]
       service({
-        url: '/cartItem',
-        method: 'DELETE',
+        url: "/cartItem",
+        method: "DELETE",
         params: {
-          id: row.id
-        }
-      }).then(res => this.$message.success('已将商品移出购物车'))
+          id: row.id,
+        },
+      }).then((res) => this.$message.success("已将商品移出购物车"));
     },
     changeNum(index) {
-      const {
-        cartItemId,
-        count,
-        price
-      } = this.cartItemFrontVoList[index]
-      console.log(cartItemId, count)
+      const { cartItemId, count, price } = this.cartItemFrontVoList[index];
+      console.log(cartItemId, count);
       service({
-        url: '/cartItem',
-        method: 'PUT',
+        url: "/cartItem",
+        method: "PUT",
         data: {
           id: cartItemId,
           count,
-          totalPrice: price * count
-        }
-      })
+          totalPrice: price * count,
+        },
+      });
     },
     updateCart() {
       service({
-        url: '/cart/getAll',
-        method: 'GET',
-        params: { id: JSON.parse(localStorage.getItem('userInfo')).id }
+        url: "/cart/getAll",
+        method: "GET",
+        params: { id: JSON.parse(localStorage.getItem("userInfo")).id },
       }).then((res) => {
-        console.log(res.data)
-        this.cartItemFrontVoList = []
+        console.log(res.data);
+        this.cartItemFrontVoList = [];
         for (let i = 0; i < res.data.cartItemFrontVoList.length; i++) {
           this.cartItemFrontVoList.push({
             id: res.data.cartItemFrontVoList[i].id,
@@ -195,26 +193,31 @@ export default {
             createTime: res.data.cartItemFrontVoList[i].createTime,
             updateTime: res.data.cartItemFrontVoList[i].updateTime,
             isDeleted: res.data.cartItemFrontVoList[i].isDeleted,
-            state: true
-          })
+            state: true,
+          });
         }
-      })
+      });
     },
     checkList() {
       console.log(
-        '这里是购物车',
+        "这里是购物车",
         this.cartItemFrontVoList.filter((item) => item.state === true)
-      )
-      localStorage.setItem('cartItemFrontVoList', JSON.stringify(this.cartItemFrontVoList.filter((item) => item.state === true)))
+      );
+      localStorage.setItem(
+        "cartItemFrontVoList",
+        JSON.stringify(
+          this.cartItemFrontVoList.filter((item) => item.state === true)
+        )
+      );
       this.$router.push({
-        path: '/checkout'
-      })
-    }
+        path: "/checkout",
+      });
+    },
   },
   components: {
     // Recommend
-  }
-}
+  },
+};
 </script>
 <style lang="less" scoped>
 .goods_name {

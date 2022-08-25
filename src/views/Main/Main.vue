@@ -53,7 +53,6 @@ export default {
         for (let i = 0; i < res.data.length; i++) {
           this.topicGoodList.push(res.data[i].productVoList)
         }
-        // console.log(this.topicGoodList)
       })
     })
   },
